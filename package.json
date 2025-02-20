@@ -1,0 +1,23 @@
+{
+  "name": "ateliefios",
+  "version": "1.0.0",
+  "description": "Sistema de Assistência para um Ateliê de Tricô.",
+  "main": "main.js",
+  "scripts": { 
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yessalas/AtelieFios.git"
+  },
+  "author": "Yesenia Salas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yessalas/AtelieFios/issues"
+  },
+  "homepage": "https://github.com/Yessalas/AtelieFios#readme",
+  "devDependencies": {
+    "electron": "^34.2.0"
+  }
+}
