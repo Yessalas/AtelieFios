@@ -1,0 +1,20 @@
+Um sistema que ajude a gerenciar pedidos, clientes, prazos e materiais.
+
+ Principais Funcionalidades do Programa:
+ Cadastro de Clientes – Nome, telefone, e-mail e medidas personalizadas.
+ Gerenciamento de Pedidos – Acompanhar pedidos desde a solicitação até a entrega.
+ Agenda de Serviços – Organizar prazos e compromissos do ateliê.
+ Controle de Estoque – Monitorar tecidos, linhas, aviamentos, etc.
+ Financeiro – Registrar pagamentos e custos de produção.
+ Relatórios – Gerar análises de pedidos, lucros e materiais usados.
+
+ Qual Tecnologia Usar?
+ Web (Online): Pode ser feito com Node.js, React, Firebase ou PHP com MySQL para um sistema acessível de qualquer lugar.
+ Desktop: Usar Python com PyQt5 para um programa local, fácil de rodar sem internet.
+ Mobile: Criar um app com Flutter ou React Native para que o ateliê possa gerenciar tudo pelo celular.
+
+Exemplo de Estrutura do Banco de Dados (MySQL ou MongoDB):
+Clientes: (ID, Nome, Contato, Medidas, Preferências)
+Pedidos: (ID, Cliente, Tipo de Serviço, Prazo, Status)
+Estoque: (ID, Material, Quantidade, Fornecedor)
+Financeiro: (ID, Cliente, Valor, Forma de Pagamento, Data)
