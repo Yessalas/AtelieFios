@@ -1,31 +1,31 @@
 1. Cadastro de Clientes
-Objetivo: Registrar informações básicas dos clientes para facilitar o atendimento e o controle de pedidos.
+Registrar informações básicas dos clientes para facilitar o atendimento e o controle de pedidos.
 Requisitos:
 Nome completo, telefone e e-mail.
 Endereço de entrega.
 
 2. Gestão de Pedidos
-Objetivo: Controlar os pedidos realizados pelos clientes, incluindo a produção e entrega.
+Controlar os pedidos realizados pelos clientes, incluindo a produção e entrega.
 Requisitos:
 Registro de pedidos de tricô (tipo de peça, tamanho, cor, etc.).
 Acompanhamento do status do pedido (em andamento, pronto para entrega, finalizado).
 Prazo de entrega estimado.
 
 3. Ordem de Serviço (OS)
-Objetivo: Controlar a execução dos serviços de tricô realizados (confeccção ou reparo).
+Controlar a execução dos serviços de tricô realizados (confeccção ou reparo).
 Requisitos:
 Número da ordem de serviço e dados do cliente.
 Descrição do serviço e prazo de entrega.
 Status da ordem de serviço (em andamento, finalizada, aguardando material).
 
 4. Controle de Estoque
-Objetivo: Gerenciar o estoque de materiais (fios, agulhas, etc.) necessários para os pedidos.
+Gerenciar o estoque de materiais (fios, agulhas, etc.) necessários para os pedidos.
 Requisitos:
 Controle de quantidade de materiais disponíveis.
 Alerta de baixo estoque para reposição.
 
 5. Faturamento e Pagamentos
-Objetivo: Gerenciar o faturamento e o controle de pagamentos dos clientes.
+Gerenciar o faturamento e o controle de pagamentos dos clientes.
 Requisitos:
 Emissão de notas fiscais.
 Controle de pagamentos (à vista, parcelado).
