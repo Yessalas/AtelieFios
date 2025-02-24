@@ -1,0 +1,38 @@
+@charset "utf8";
+
+/* Variaveis cor */
+:root{
+    --fundo: #d8e4ec;
+}
+/* Botões tabela principal */
+body{
+    font-family: "Open Sans", sans-serif;
+    background-color: var(--fundo);
+}
+body h1{
+    text-align: center;
+    margin-top: 40px;
+}
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 57vh; 
+}
+.button img{
+    margin: 7%;
+}
+
+/* RODAPÉ */
+footer {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    background-color: #b6c4cb;
+    position: fixed;
+    bottom: 0;
+}
+footer p{
+    color: black;
+    padding-top: 7px;
+}
