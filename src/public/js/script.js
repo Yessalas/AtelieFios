@@ -1,7 +1,7 @@
 /**
  * @author Yesenia Salas
  */
-
+//------------------------------- AJUSTE DATA -----------------------------------------------------------------------
 // Data atualizada toda vez que entrar no aplicativo
 function obterData(){
     const dataAtual = new Date()
@@ -15,3 +15,17 @@ function obterData(){
 }
 // executar a função ao iniciar o aplicativo (janela principal)
 document.getElementById('dataAtual').innerHTML = obterData()
+//------------------------------- FIM AJUSTE DATA -----------------------------------------------------------------------
+//------------------------------------- FUNÇÃO BOTÃO - cliente -----------------------------------------------------------------
+function botaoCliente() {
+    window.location.href = "cliente.html";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const clienteImg = document.getElementById("clienteImg");
+    if (clienteImg) {
+        clienteImg.addEventListener("click", botaoCliente);
+    }
+});
+//--------------------------------------- FIM FUNÇÃO BOTÃO - cliente ---------------------------------------------------------------
+
