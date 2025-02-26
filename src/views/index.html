@@ -12,14 +12,16 @@
 <body>
     <h1>ATELIÊ FIOS</h1>
     <div class="container button">
-        <img id="clienteImg" src="../public/img/cadastro-cliente.png" alt="clientes" title="Cadastro de clientes">
-        <img src="../public/img/tarefa-concluida.png" alt="OS" title=" Emissão OS"> 
-        <img src="../public/img/fio.png" alt="fios" title="Cores de lans">     
+        <img src="../public/img/cadastro-cliente.png" alt="clientes" title="Cadastro de clientes" onclick="cliente()">
+        <img src="../public/img/tarefa-concluida.png" alt="OS" title=" Emissão OS" onclick="ordems()"> 
+        <img src="../public/img/fio.png" alt="fios" title="Cores de lans" onclick="lans()">     
     </div>
     
     <footer>
         <p id="dataAtual"></p>           
     </footer>
     <script src="../public/js/script.js"></script>
+
+    <script src="renderer.js"></script><!-- Renderizador -->
 </body>
 </html>

@@ -1,6 +1,8 @@
 //console.log('Hello from Electron.')
 
-const { app, BrowserWindow, nativeTheme, Menu } = require('electron')
+const { app, BrowserWindow, nativeTheme, Menu, ipcMain } = require('electron')
+
+const path= require('node:path')
 // nativeTheme.themeSource = 'light'
 
 // -------------- Janela Principal ----------------------------------------
@@ -10,12 +12,27 @@ const createWindow = () => {
     width: 800,
     height: 600,
     icon: './src/public/img/trico.png',
-    resizable: false
+    resizable: false,
+    webPreferences:{
+      preload: path.join(__dirname, 'preload.js')
+    }
   })
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 
   win.loadFile('./src/views/index.html')
+
+  // recebimento dos pedidos de abertura de janelas(renderizador)
+  ipcMain.on('client-window', () => {
+    clientWindow()
+  })
+
+  ipcMain.on('ordems-window', () => {
+    ordemsWindow()
+  })
+  ipcMain.on('fios-window', () => {
+    fiosWindow()
+  })
 }
 // ----------------- Fim janela principar-------------------------------------
 
@@ -44,17 +61,17 @@ function aboutWindows(){
 
 // ------------------- Fim Janela Sobre-----------------------------------
 // ------------------------ Janela Cliente --------------------------------------------------
-function clientWindows(){
+function clientWindow(){
   nativeTheme.themeSource = 'light'
   // a linha abaixo obtém a janela principal
   const main = BrowserWindow.getFocusedWindow()
   let client
   // Estabelecer hierarquica entre janelas
   if (main){
-    // criar a janela sobre
+    // criar a janela cliente
     client = new BrowserWindow({
-        width: 500,
-        height: 300,
+        width: 700,
+        height: 600,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
         resizable: false,
@@ -64,8 +81,59 @@ function clientWindows(){
     })
   }
   client.loadFile('./src/views/cliente.html')
+  client.center()
 }
 // -------------------------- Fim Janela Cliente ------------------------------------------------
+
+// ------------------------ Janela OS (ordem de serviço) --------------------------------------------------
+function ordemsWindow(){
+  nativeTheme.themeSource = 'light'
+  // a linha abaixo obtém a janela principal
+  const main = BrowserWindow.getFocusedWindow()
+  let ordems
+  // Estabelecer hierarquica entre janelas
+  if (main){
+    // criar a janela OS
+    ordems = new BrowserWindow({
+        width: 700,
+        height: 600,
+        icon: './src/public/img/trico.png',
+        autoHideMenuBar: true,
+        resizable: false,
+        minimizable: false,
+        parent: main,
+        modal: true
+    })
+  }
+  ordems.loadFile('./src/views/ordem.html')
+  ordems.center()
+}
+// -------------------------- Fim Janela OS (ordem de serviço) ------------------------------------------------
+
+// ------------------------ Janela Fios --------------------------------------------------
+function fiosWindow(){
+  nativeTheme.themeSource = 'light'
+  // a linha abaixo obtém a janela principal
+  const main = BrowserWindow.getFocusedWindow()
+  let fios
+  // Estabelecer hierarquica entre janelas
+  if (main){
+    // criar a janela fios
+    fios = new BrowserWindow({
+        width: 700,
+        height: 600,
+        icon: './src/public/img/trico.png',
+        autoHideMenuBar: true,
+        resizable: false,
+        minimizable: false,
+        parent: main,
+        modal: true
+    })
+  }
+  fios.loadFile('./src/views/fios.html')
+  fios.center()
+}
+// -------------------------- Fim Janela OS (ordem de serviço) ------------------------------------------------
 app.whenReady().then(() => {
   createWindow()
   //aboutWindow()
@@ -88,10 +156,11 @@ const template = [
       submenu:[
         {
           label: 'Clientes',
-          click: () => clientWindows()
+          click: () => clientWindow()
         },
         {
-          label: 'OS'
+          label: 'OS',
+          click: () => ordemsWindow()
         },
         {
           type: 'separator'
@@ -108,6 +177,10 @@ const template = [
       submenu: [
         {
           label:'Clientes'
+        },
+        {
+          label:'Fio&Lans',
+          click: () => fiosWindow()
         },
         {
           label:'OS abertas'
