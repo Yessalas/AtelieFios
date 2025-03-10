@@ -70,8 +70,8 @@ function clientWindow(){
   if (main){
     // criar a janela cliente
     client = new BrowserWindow({
-        width: 700,
-        height: 600,
+        width: 940,
+        height: 700,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
         resizable: false,
@@ -95,8 +95,8 @@ function ordemsWindow(){
   if (main){
     // criar a janela OS
     ordems = new BrowserWindow({
-        width: 700,
-        height: 600,
+        width: 940,
+        height: 700,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
         resizable: false,

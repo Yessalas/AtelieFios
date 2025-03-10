@@ -11,9 +11,101 @@
 </head>
 <body>
     <h1>Ordem de serviço</h1>
-    <footer>
-          
-    </footer>
+    <div class="container">
+        <form id="frmOrdem" class="mt-2 row g-3">
+            <hr class="mt-4 border border-primary border -1">
+            <!-- Nome -->
+            <div class="col-md-8">
+                <label for="inputNameOrdem" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30">
+            </div>
+
+            <!-- Pedido -->
+            <div class="col-md-4">
+                <label for="inputTelefoneOrdem" class="form-label">Telefone</label>
+                <input type="text" class="form-control" id="inputTelefoneOrdem" spellcheck="false" maxlength="15">
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-8">
+                <label for="inputEmailOrdem" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30">
+            </div>
+
+            <!-- CEP -->
+            <div class="col-md-4">
+                <label for="inputCEPOrdem" class="form-label">CEP</label>
+                <input type="text" class="form-control" id="inputCEPOrdem" spellcheck="false" maxlength="9" required>
+            </div>
+
+            <!-- Endereço -->
+            <div class="col-md-6">
+                <label for="inputAddressOrdem" class="form-label">Endereço</label>
+                <input type="text" class="form-control" id="inputAddressOrdem" spellcheck="false" maxlength="30"
+                    required>
+            </div>
+
+            <!-- Número -->
+            <div class="col-md-3">
+                <label for="inputNumberOrdem" class="form-label">Número</label>
+                <input type="text" class="form-control" id="inputNumberOrdem" spellcheck="false" maxlength="5"
+                    required>
+            </div>
+
+            <!-- Complemento -->
+            <div class="col-md-3">
+                <label for="inputComplementOrdem" class="form-label">Complemento</label>
+                <input type="text" class="form-control" id="inputComplementOrdem" spellcheck="false" maxlength="12">
+            </div>
+            <!-- DESCRIÇÃO DO PEDIDO-->
+            <hr class="mt-4 border border-primary border -1">
+            <h2>Descrição do serviço </h2>           
+            <!-- Serviço -->
+            <div class="col-md-4">
+                <label for="inputServiçoOrdem" class="form-label">Tipo de serviço</label>
+                <select class="form-select" id="inputServiçoOrdem" name="UF" required>
+                    <option></option>
+                    <option >Encomenda</option>
+                    <option >Reparo de peça</option>
+                    <option >...</option>
+                </select>
+            </div>
+
+            <!-- Quantidade-->
+            <div class="col-md-2">
+                <label for="inputQuantidadeOrdem" class="form-label">Quantidade</label>
+                <input type="text" class="form-control" id="inputQuantidadeOrdem" spellcheck="false" maxlength="12">
+            </div>
+            <!-- Pagamento -->
+            <div class="col-md-4">
+                <label for="inputPagamentoOrdem" class="form-label">Forma de pagamento</label>
+                <select class="form-select" id="inputPagamentoOrdem" name="UF" required>
+                    <option ></option>
+                    <option >Dinheiro</option>
+                    <option >Pix</option>
+                    <option >Cartão - Débito</option>
+                    <option>Cartão - Crédito</option>
+                </select>
+            </div>
+            <!-- Observções
+            <hr class="mt-4 border border-primary border -1">
+            <h2>Observações do cliente</h2>
+            <div class="col-md-9">
+                <label for="inputObservacoesOrdem" class="form-label"></label>
+                <input type="text" class="form-control" id="inputObservacoesOrdem" spellcheck="false" maxlength="12">
+            </div> -->
+
+
+            
+            <!-- Botões -->
+            <div class="mt-5">
+                <button type="submit" class="btn btn-success" id="btnCreateO">Adicionar</button>
+                <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir</button>
+                <button type="reset" class="btn" id="btnResetO" onclick="resetForm()"></button>
+            </div>
+        </form>
+        
+    </div>
     <script src="../public/js/script.js"></script>
 </body>
 </html>
