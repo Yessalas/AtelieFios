@@ -70,15 +70,13 @@ function clientWindow(){
   if (main){
     // criar a janela cliente
     client = new BrowserWindow({
-        width: 940,
-        height: 700,
-        icon: './src/public/img/trico.png',
-        autoHideMenuBar: true,
-        resizable: false,
-        minimizable: false,
-        parent: main,
-        modal: true
-    })
+      width: 900,
+      height: 700,
+      //autoHideMenuBar: true,
+      resizable: false,
+      parent: main,
+      modal: true
+  })
   }
   client.loadFile('./src/views/cliente.html')
   client.center()
@@ -95,7 +93,7 @@ function ordemsWindow(){
   if (main){
     // criar a janela OS
     ordems = new BrowserWindow({
-        width: 940,
+        width: 900,
         height: 700,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
@@ -120,8 +118,8 @@ function fiosWindow(){
   if (main){
     // criar a janela fios
     fios = new BrowserWindow({
-        width: 700,
-        height: 600,
+        width: 900,
+        height: 700,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
         resizable: false,

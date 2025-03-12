@@ -22,12 +22,27 @@ body h1{
 .button img{
     margin: 7%;
 }
+
+/*  */
+.centroBusca {
+    margin: 0 auto; /* Centraliza horizontalmente */
+    display: block;
+}
 /* botões */
 
 #btnReset {
     width: 48px;
     height: 48px;
     background-image: url('../img/vassoura.png');
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#btnReiniciar {
+    width: 48px;
+    height: 48px;
+    background-image: url('../img/atualizar.png');
     border: none;
     cursor: pointer;
     margin-left: 10px;
