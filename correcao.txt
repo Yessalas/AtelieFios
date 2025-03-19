@@ -1,0 +1,7 @@
+- tela de clientes. não pode ter rolagem.
+- remover pedido da tela de clientes
+- tela OS- remover endereço do cliente.
+    adicionar data da abertura da OS,valor da OS, material usado.
+    Verificar mais coisas
+-  fazer tela de controle de estoque.
+- tirar a rolagem da tela sobre.
