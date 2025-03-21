@@ -3,19 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATELIÊ FIOS</title>
+    <title>Ordem de serviço</title>
     <link rel="stylesheet" href="../public/css/bootstrap.min.css">
     <link rel="stylesheet" href="../public/css/style.css">
 
     <meta http-equiv="content-Security-Policy" content="script-src 'self' 'unsafe-inline' ">
 </head>
 <body>
-    <h1>Ordem de serviço</h1>
+    <!-- <h1>Ordem de serviço</h1> -->
     <div class="container">
         <form id="frmOrdem" class="mt-2 row g-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="searchOrdem" maxlength="30" spellcheck="false">
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary" id="btnRead" onclick="searchClient()">Buscar</button>
+            </div>
             <hr class="mt-4 border border-primary border -1">
             <!-- Nome -->
-            <div class="col-md-8">
+            <div class="col-md-5">
                 <label for="inputNameOrdem" class="form-label">Nome</label>
                 <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30">
             </div>
@@ -27,20 +33,20 @@
             </div>
 
             <!-- Email -->
-            <div class="col-md-8">
-                <label for="inputEmailOrdem" class="form-label">E-mail</label>
+            <div class="col-md-3">
+                <label for="inputEmailOrdem" class="form-label">CPF</label>
                 <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30">
             </div>
 
             <!-- CEP -->
             <div class="col-md-4">
-                <label for="inputCEPOrdem" class="form-label">CEP</label>
+                <label for="inputCEPOrdem" class="form-label">N*OS</label>
                 <input type="text" class="form-control" id="inputCEPOrdem" spellcheck="false" maxlength="9" required>
             </div>
 
             <!-- Endereço -->
             <div class="col-md-6">
-                <label for="inputAddressOrdem" class="form-label">Endereço</label>
+                <label for="inputAddressOrdem" class="form-label">..</label>
                 <input type="text" class="form-control" id="inputAddressOrdem" spellcheck="false" maxlength="30"
                     required>
             </div>
@@ -76,6 +82,7 @@
                 <label for="inputQuantidadeOrdem" class="form-label">Quantidade</label>
                 <input type="text" class="form-control" id="inputQuantidadeOrdem" spellcheck="false" maxlength="12">
             </div>
+        
             <!-- Pagamento -->
             <div class="col-md-4">
                 <label for="inputPagamentoOrdem" class="form-label">Forma de pagamento</label>
@@ -86,6 +93,11 @@
                     <option >Cartão - Débito</option>
                     <option>Cartão - Crédito</option>
                 </select>
+            </div>
+            <!-- Total Pagmento-->
+            <div class="col-md-2">
+                <label for="inputPagarOrdem" class="form-label">Total a pagar</label>
+                <input type="text" class="form-control" id="inputPagarOrdem" spellcheck="false" maxlength="12">
             </div>
  
             <!-- Botões -->

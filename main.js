@@ -9,8 +9,8 @@ const path= require('node:path')
 const createWindow = () => {
   nativeTheme.themeSource = 'light'
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 750,
     icon: './src/public/img/trico.png',
     resizable: false,
     webPreferences:{
@@ -71,7 +71,7 @@ function clientWindow(){
     // criar a janela cliente
     client = new BrowserWindow({
       width: 900,
-      height: 700,
+      height: 750,
       //autoHideMenuBar: true,
       resizable: false,
       parent: main,
@@ -94,7 +94,7 @@ function ordemsWindow(){
     // criar a janela OS
     ordems = new BrowserWindow({
         width: 900,
-        height: 700,
+        height: 750,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
         resizable: false,
