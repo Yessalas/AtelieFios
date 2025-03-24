@@ -13,59 +13,77 @@
     <!-- <h1>Ordem de serviço</h1> -->
     <div class="container">
         <form id="frmOrdem" class="mt-2 row g-3">
+            <!-- buscar cliente -->
             <div class="col-md-6">
-                <input type="text" class="form-control" id="searchOrdem" maxlength="30" spellcheck="false">
+                <input type="text" class="form-control" id="searchOrdem" maxlength="30" spellcheck="false" placeholder="Buscar cliente">
             </div>
-            <div class="col-md-4">
-                <button type="button" class="btn btn-primary" id="btnRead" onclick="searchClient()">Buscar</button>
+            <div class="col-md-5">
+                <button type="button" class="btn btn-primary" id="btnReadBuscar" onclick="searchClient()">Buscar</button>
             </div>
             <hr class="mt-4 border border-primary border -1">
+
+            <!-- Nº OS -->
+            <div class="col-md-2">
+                <label class="form-label">NºOS</label>
+                <input type="text" class="form-control" id="txtOs" disabled>
+            </div>
+
+            <!-- Nº SÉRIE -->
+            <div class="col-md-3">
+                <label class="form-label">NºSérie</label>
+                <input type="text" class="form-control" id="txtOs" >
+            </div>
+            <!-- data de entrada -->
+            <div class="col-md-3">
+                <label class="form-label">Data de Entrada</label>
+                <input type="date" class="form-control" id="dataEntrada" disabled>
+            </div>
+
+            <!-- data de saída -->
+            <div class="col-md-3">
+                <label class="form-label">Data de saída</label>
+                <input type="date" class="form-control" id="dataEntrada" >
+            </div>
             <!-- Nome -->
             <div class="col-md-5">
                 <label for="inputNameOrdem" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30">
+                <!-- <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30"> -->
+                <input type="text" class="form-control" id="txtNome" disabled>
             </div>
 
-            <!-- Pedido -->
+            <!-- Telefone -->
             <div class="col-md-4">
                 <label for="inputTelefoneOrdem" class="form-label">Telefone</label>
-                <input type="text" class="form-control" id="inputTelefoneOrdem" spellcheck="false" maxlength="15">
+                <!-- <input type="text" class="form-control" id="inputTelefoneOrdem" spellcheck="false" maxlength="15"> -->
+                <input type="text" class="form-control" id="txttelefone" disabled>
             </div>
 
-            <!-- Email -->
+            <!-- CPF -->
             <div class="col-md-3">
                 <label for="inputEmailOrdem" class="form-label">CPF</label>
-                <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30">
+                <!-- <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30"> -->
+                <input type="text" class="form-control" id="txtCPF" disabled>
             </div>
 
-            <!-- CEP -->
-            <div class="col-md-4">
-                <label for="inputCEPOrdem" class="form-label">N*OS</label>
-                <input type="text" class="form-control" id="inputCEPOrdem" spellcheck="false" maxlength="9" required>
-            </div>
+            
 
-            <!-- Endereço -->
-            <div class="col-md-6">
-                <label for="inputAddressOrdem" class="form-label">..</label>
-                <input type="text" class="form-control" id="inputAddressOrdem" spellcheck="false" maxlength="30"
-                    required>
-            </div>
-
-            <!-- Número -->
-            <div class="col-md-3">
-                <label for="inputNumberOrdem" class="form-label">Número</label>
-                <input type="text" class="form-control" id="inputNumberOrdem" spellcheck="false" maxlength="5"
-                    required>
-            </div>
-
-            <!-- Complemento -->
-            <div class="col-md-3">
-                <label for="inputComplementOrdem" class="form-label">Complemento</label>
-                <input type="text" class="form-control" id="inputComplementOrdem" spellcheck="false" maxlength="12">
-            </div>
+           
             <!-- DESCRIÇÃO DO PEDIDO-->
             <hr class="mt-4 border border-primary border -1">
-            <h2>Descrição do serviço </h2>           
+            <h2>Descrição do serviço </h2> 
+            <!-- STATUS DA OS -->
+            <div class="col-md-4">
+                <label for="inputStatusOrdem" class="form-label">Status da OS</label>
+                <select class="form-select" id="inputStatusOrdem" name="UF" required>
+                    <option></option>
+                    <option >Aberta</option>
+                    <option >Em Análise</option>
+                    <option >Aprovada</option>
+                    <option >Em Execução</option>
+                    <option >Cancelada</option>
+                    <option >Concluída</option>
+                </select>
+            </div>
             <!-- Serviço -->
             <div class="col-md-4">
                 <label for="inputServiçoOrdem" class="form-label">Tipo de serviço</label>
@@ -79,14 +97,36 @@
 
             <!-- Quantidade-->
             <div class="col-md-2">
-                <label for="inputQuantidadeOrdem" class="form-label">Quantidade</label>
+                <label for="inputQuantidadeOrdem" class="form-label">Qtd peça</label>
                 <input type="text" class="form-control" id="inputQuantidadeOrdem" spellcheck="false" maxlength="12">
             </div>
-        
+            
+            <!-- Descrição do pedido do cliente -->
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                <label for="floatingTextarea">Descrição do pedido do cliente.</label>
+            </div>
+
+            <!-- MARCA DO MATERIA (LÃ) -->
+            <div class="col-md-4">
+                <label for="inputPagamentoOrdem" class="form-label">Marca da lã</label>
+                <select class="form-select form-select-sm" aria-label="Small select example" required>
+                    <option ></option>
+                    <option value="1">Pingouin</option>
+                    <option value="2">EuroRoma</option>
+                    <option value="3">Lãs Cisne (Coats Corrente)</option>
+                    <option value="4">Lion Brand</option>
+                    <option value="5">Red Heart</option>
+                    <option value="6">Katia</option>
+                    <option value="7">Merino</option>
+                    <option value="8">Círculo</option>
+                    
+                  </select>
+            </div>
             <!-- Pagamento -->
             <div class="col-md-4">
                 <label for="inputPagamentoOrdem" class="form-label">Forma de pagamento</label>
-                <select class="form-select" id="inputPagamentoOrdem" name="UF" required>
+                <select class="form-select form-select-sm" aria-label="Small select example" required>
                     <option ></option>
                     <option >Dinheiro</option>
                     <option >Pix</option>
@@ -95,14 +135,17 @@
                 </select>
             </div>
             <!-- Total Pagmento-->
-            <div class="col-md-2">
-                <label for="inputPagarOrdem" class="form-label">Total a pagar</label>
-                <input type="text" class="form-control" id="inputPagarOrdem" spellcheck="false" maxlength="12">
+            <div class="container mt-2">
+                <label for="valor" class="form-label">Total a pagar:</label>
+                <div class="input-group w-25">
+                    <span class="input-group-text">R$</span>
+                    <input type="text" id="valor" class="form-control text-end" placeholder="0,00">
+                </div>
             </div>
  
             <!-- Botões -->
             <div class="mt-5">
-                <button type="submit" class="btn btn-success" id="btnCreateO">Adicionar</button>
+                <!-- <button type="submit" class="btn btn-success" id="btnCreateO">Atualizar</button> -->
                 <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir</button>
                 <button type="reiniciar" class="btn" id="btnReiniciar" onclick="reiniciarForm()"></button>
             </div>

@@ -5,3 +5,4 @@
     Verificar mais coisas
 -  fazer tela de controle de estoque.
 - tirar a rolagem da tela sobre.
+ Círculo (Brasil)

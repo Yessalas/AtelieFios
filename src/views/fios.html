@@ -12,15 +12,60 @@
 <body>
     <h1>Fios e lans</h1>
     <div class="container">
+      <form id="frmClient" class="mt-2 row g-3">
         <form id="frmOrdem" class="mt-2 row g-3">
-            <hr class="mt-4 border border-primary border -1">
-            <!-- Código -->
-            <div class="col-md-2">
-                <label for="inputCodFios" class="form-label">Código</label>
-                <input type="text" class="form-control" id="inputCodFios" spellcheck="false" required maxlength="30">
+
+            <!-- buscar -->
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="searchClient" maxlength="30" spellcheck="false">
             </div>
-       
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary" id="btnRead" onclick="searchClient()">Buscar</button>
+            </div>
+
+            <hr class="mt-4 border border-primary border -1">
+            
+
+            <!-- tabela -->
+            <div class="tabela">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Qtd.</th>
+                      <th scope="col">Produto</th>
+                      <th scope="col">Cor</th>
+                      <th scope="col">Img</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Lan</td>
+                      <td>Rosa</td>
+                      <td>@mdo</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Lan</td>
+                      <td>Preta</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td scope="row">Lan</td>
+                      <td>Azul</td>
+                    </tr>
+                  </tbody>
+                  </table>
+            </div>
+            <div class="mt-5">
+              <button type="submit" class="btn btn-success" id="btnCreate">Adicionar</button>
+              <button type="submit" class="btn btn-warning" id="btnUpdate">Editar</button>
+              <button type="button" class="btn btn-danger" id="btnDelete">Excluir</button>
+          </div>
+          </form>
     </div>
+    
     <script src="../public/js/script.js"></script>
 </body>
 </html>
