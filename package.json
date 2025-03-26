@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Sistema de Assistência para um Ateliê de Tricô.",
   "main": "main.js",
-  "scripts": { 
+  "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,5 +19,8 @@
   "homepage": "https://github.com/Yessalas/AtelieFios#readme",
   "devDependencies": {
     "electron": "^34.2.0"
+  },
+  "dependencies": {
+    "mongoose": "^8.13.0"
   }
 }

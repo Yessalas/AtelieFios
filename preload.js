@@ -7,5 +7,7 @@ const {contextBridge, ipcRenderer}= require('electron')
 contextBridge.exposeInMainWorld('api', {
     clientWindow:() => ipcRenderer.send('client-window'),
     ordemsWindow:() => ipcRenderer.send('ordems-window'),
-    fiosWindow:() => ipcRenderer.send('fios-window')
+    fiosWindow:() => ipcRenderer.send('fios-window'),
+    dbStatus: (message) => ipcRenderer.on('db-status', message),
+    newClient: (client) => ipcRenderer.send('new-client', client)
 })
