@@ -9,11 +9,16 @@ function buscarCEP() {
             document.getElementById('inputAddressClient').value = dados.logradouro
             document.getElementById('inputNeighborhoodClient').value = dados.bairro
             document.getElementById('inputCityClient').value = dados.localidade
-            document.getElementById('inputUFCliente').value = dados.uf
+            document.getElementById('inputUFClient').value = dados.uf
         })
         .catch(error => console.log(error))
 }
 
+
+
+
+//capturar o foco na busca pelo nome do cliente
+// a constatnte foco obtem o elemento html(inpu) identificado como 'searchClient'
 const foco = document.getElementById('searchClient')
 // iniciar a janel de cliente alterando as propriedades de alguns elementos
 document.addEventListener('DOMContentLoaded',() => {
@@ -44,9 +49,18 @@ frmClient.addEventListener('submit', async (event)=>{
     event.preventDefault()
 
     // Teste importante (Recebimento dos dados do formulário - Passo 1 do fluxo)
-    console.log(nameClient.value, cpfClient.value, emailClient.value, phoneClient.value, 
-        cepClient.value, addressClient.value, numberClient.value, numberClient.value, 
-        complementClient.value, neighborhoodClient.value, cityClient.value, ufClient.value)
+    console.log(
+        nameClient.value, 
+        cpfClient.value, 
+        emailClient.value, 
+        phoneClient.value, 
+        cepClient.value, 
+        addressClient.value, 
+        numberClient.value,
+        complementClient.value, 
+        neighborhoodClient.value, 
+        cityClient.value, 
+        ufClient.value)
     // criar um objeto para armazenar os dados do cliente antes de enviar ao main
     const client = {
         nameClient : nameClient.value,

@@ -14,7 +14,7 @@ const clientModel = require ('./src/models/cliente.js')
 // -------------- Janela Principal ----------------------------------------
 const createWindow = () => {
   nativeTheme.themeSource = 'light'
-  win = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 800,
     height:600,
     icon: './src/public/img/trico.png',
@@ -71,7 +71,10 @@ function clientWindow(){
       //autoHideMenuBar: true,
       resizable: false,
       parent: main,
-      modal: true
+      modal: true,
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js')
+    }
   })
   }
   client.loadFile('./src/views/cliente.html')
@@ -259,27 +262,27 @@ const template = [
     fiosWindow()
   })
 
-ipcMain.on('new-client', async (event, client) => {
-  // importante! teste de recebimento dos dados do cliente
-  console.log(client)
-  //cadastrar a estrutura de dados no banco de dados mongodb
-  try {
-      //criar uma nova de estrutura de dados usando a classe
-      // modelo. atenção os atributos precisam ser idê
-      const newClient = new clientModel({
-          nomeCliente: client.nameClient,
-          cpfCliente:client.cpfClient,
-          emailCliente:client.emailClient,
-          foneCliente:client.phoneClient,
-          cepCliente:client.cepClient,
-          logradouroCliente:client.addressClient,
-          numeroCliente:client.numberClient,
-          complementoCliente:client.complementClient,
-          bairroCliente:client.neighborhoodClient,
-          cidadeCliente:client.cityClient,
-          ufcCliente:client.ufClient
-      })
-      await newClient.save()
+  ipcMain.on('new-client', async (event, client) => {
+    // importante! teste de recebimento dos dados do cliente
+    console.log(client)
+    //cadastrar a estrutura de dados no banco de dados mongodb
+    try {
+        //criar uma nova de estrutura de dados usando a classe
+        // modelo. atenção os atributos precisam ser idê
+        const newClient = new clientModel({
+            nomeCliente: client.nameClient,
+            cpfCliente:client.cpfClient,
+            emailCliente:client.emailClient,
+            foneCliente:client.phoneClient,
+            cepCliente:client.cepClient,
+            logradouroCliente:client.addressClient,
+            numeroCliente:client.numberClient,
+            complementoCliente:client.complementClient,
+            bairroCliente:client.neighborhoodClient,
+            cidadeCliente:client.cityClient,
+            ufcCliente:client.ufClient
+        })
+        await newClient.save()
   } catch (error) {
       console.log(error)
   }
