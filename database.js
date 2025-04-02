@@ -26,6 +26,7 @@ const conectar = async () => {
             await mongoose.connect(url) //conectar
             conectado = true //setar a variável
             console.log("MongoDB conectado")
+            return true
         } catch (error) {
             // se o código de erro = 8000 (autenticação)
             if (error.code = 8000) {

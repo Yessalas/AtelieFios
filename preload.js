@@ -10,7 +10,9 @@ ipcRenderer.send('db-connect')
 contextBridge.exposeInMainWorld('api', {
     clientWindow: () => ipcRenderer.send('client-window'),
     ordemsWindow: () => ipcRenderer.send('ordems-window'),
+    fiosWindow: () => ipcRenderer.send('fios-window'),
     dbStatus: (message) => ipcRenderer.on('db-status', message),
     newClient: (client) => ipcRenderer.send('new-client', client),
-//     resetForm: (args) => ipcRenderer.on('reset-form', args)
+    newOrdem: (ordems) => ipcRenderer.send('new-ordem', ordems),
+    resetForm: (args) => ipcRenderer.on('reset-form', args)
  })

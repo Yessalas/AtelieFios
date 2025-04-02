@@ -24,45 +24,45 @@
 
             <!-- Nº OS -->
             <div class="col-md-2">
-                <label class="form-label">NºOS</label>
-                <input type="text" class="form-control" id="txtOs" disabled>
+                <label  for="inputNumeroOs"  class="form-label">NºOS</label>
+                <input type="text" class="form-control" id="inputNumeroOs" disabled>
             </div>
 
             <!-- Nº SÉRIE -->
             <div class="col-md-3">
-                <label class="form-label">NºSérie</label>
-                <input type="text" class="form-control" id="txtOs" >
+                <label  for="inputNumeroSerie" class="form-label">NºSérie</label>
+                <input type="text" class="form-control" id="inputNumeroSerie" >
             </div>
             <!-- data de entrada -->
             <div class="col-md-3">
-                <label class="form-label">Data de Entrada</label>
-                <input type="date" class="form-control" id="dataEntrada" disabled>
+                <label  for="inputDataEntrada" class="form-label">Data de Entrada</label>
+                <input type="date" class="form-control" id="inputDataEntrada" disabled>
             </div>
 
             <!-- data de saída -->
             <div class="col-md-3">
-                <label class="form-label">Data de saída</label>
-                <input type="date" class="form-control" id="dataEntrada" >
+                <label for="inputDataSaida"  class="form-label">Data de saída</label>
+                <input type="date" class="form-control" id="inputDataSaida" >
             </div>
             <!-- Nome -->
             <div class="col-md-5">
                 <label for="inputNameOrdem" class="form-label">Nome</label>
                 <!-- <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30"> -->
-                <input type="text" class="form-control" id="txtNome" disabled>
+                <input type="text" class="form-control" id="inputNomeOrdem" disabled>
             </div>
 
             <!-- Telefone -->
             <div class="col-md-4">
                 <label for="inputTelefoneOrdem" class="form-label">Telefone</label>
                 <!-- <input type="text" class="form-control" id="inputTelefoneOrdem" spellcheck="false" maxlength="15"> -->
-                <input type="text" class="form-control" id="txttelefone" disabled>
+                <input type="text" class="form-control" id="inputTelefoneOrdem" disabled>
             </div>
 
             <!-- CPF -->
             <div class="col-md-3">
-                <label for="inputEmailOrdem" class="form-label">CPF</label>
+                <label for="inputCPFOrdem" class="form-label">CPF</label>
                 <!-- <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30"> -->
-                <input type="text" class="form-control" id="txtCPF" disabled>
+                <input type="text" class="form-control" id="inputCPFOrdem" disabled>
             </div>
 
             
@@ -86,8 +86,8 @@
             </div>
             <!-- Serviço -->
             <div class="col-md-4">
-                <label for="inputServiçoOrdem" class="form-label">Tipo de serviço</label>
-                <select class="form-select" id="inputServiçoOrdem" name="UF" required>
+                <label for="inputServicoOrdem" class="form-label">Tipo de serviço</label>
+                <select class="form-select" id="inputServicoOrdem" name="UF" required>
                     <option></option>
                     <option >Encomenda</option>
                     <option >Reparo de peça</option>
@@ -109,8 +109,8 @@
 
             <!-- MARCA DO MATERIA (LÃ) -->
             <div class="col-md-3">
-                <label for="inputPagamentoOrdem" class="form-label">Marca da lã</label>
-                <select class="form-select form-select-sm" aria-label="Small select example" required>
+                <label for="inputMarcaOrdem" class="form-label">Marca da lã</label>
+                <select class="form-select form-select-sm" id="inputMarcaOrdem" aria-label="Small select example" required>
                     <option ></option>
                     <option value="1">Pingouin</option>
                     <option value="2">EuroRoma</option>
@@ -126,7 +126,7 @@
             <!-- Pagamento -->
             <div class="col-md-4">
                 <label for="inputPagamentoOrdem" class="form-label">Forma de pagamento</label>
-                <select class="form-select form-select-sm" aria-label="Small select example" required>
+                <select class="form-select form-select-sm" id="inputPagamentoOrdem" aria-label="Small select example" required>
                     <option ></option>
                     <option >Dinheiro</option>
                     <option >Pix</option>
@@ -134,21 +134,13 @@
                     <option>Cartão - Crédito</option>
                 </select>
             </div>
-            
-
-            <!-- <div class="col-md-6">
-                <label for="foto" class="form-label"> fotos </label>
-                <input type="file" id="foto" accept="image/*" spellcheck="false" multiple class="form-control">
-            </div>
-            <div id="preview"></div> -->
-           
-               
+                         
             <!-- Total Pagmento-->
             <div class="container mt-3">
-                <label for="valor" class="form-label">Total a pagar:</label>
+                <label for="inputValorOrdem" class="form-label">Total a pagar:</label>
                 <div class="input-group w-25">
                     <span class="input-group-text">R$</span>
-                    <input type="text" id="valor" class="form-control text-end" placeholder="0,00">
+                    <input type="text" id="inputValorOrdem" class="form-control text-end" placeholder="0,00">
                 </div>
             </div>
 
@@ -156,9 +148,9 @@
             <!-- Botões -->
             <div class="mt-5">
                 <!-- <button type="submit" class="btn btn-success" id="btnCreateO">Atualizar</button> -->
-                <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir OS</button>
                 <button type="button" class="btn btn-success">Gerar OS</button>
-                <button type="button" class="btn btn-warning">Editar OS</button>
+                <button type="button" class="btn btn-warning" id="btnUpdateO">Editar OS</button>
+                <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir OS</button>
                 <button type="reiniciar" class=" btn btn-info" id="btnReiniciar" onclick="reiniciarForm()">Reiniciar</button>
                 
             </div>
