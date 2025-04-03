@@ -25,7 +25,7 @@ let ValorTlOrdem=document.getElementById('inputValorOrdem')
 
 // 
 // Evento associado ao botão submit (Uso das validações do HTML)
-frmOrdem.addEventListener('submit', async (event)=>{
+frmOrdem.addEventListener('submitO', async (event)=>{
     // Evitar o comportamento padrão do submit que é enviar os dados do formulário e reiniciar o documento HTML
     event.preventDefault()
 
@@ -46,7 +46,7 @@ frmOrdem.addEventListener('submit', async (event)=>{
         ValorTlOrdem.value
     )
     // criar um objeto para armazenar os dados do cliente antes de enviar ao main
-    const ordem = {
+    const ordems = {
         numOsOrdem: numOsOrdem.value, 
         numSerieOrdem: numSerieOrdem.value, 
         DtEntradaOrdem: DtEntradaOrdem.value, 
@@ -62,5 +62,5 @@ frmOrdem.addEventListener('submit', async (event)=>{
         ValorTlOrdem: ValorTlOrdem.value
     }
     // enviar ao main o objeto client - passo 2 fluxo
-    api.newClient(client)
+    api.newOrdem(ordems)
 })

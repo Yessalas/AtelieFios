@@ -10,6 +10,7 @@ const { conectar, desconectar } = require('./database.js')
 
 // importação do schema clientes da camada model
 const clientModel = require ('./src/models/cliente.js')
+const ordemModel = require ('./src/models/ordem.js')
 
 // importaçpão do pacote jspdf (npm i jspdf)
 const {jspdf, default: jsPDF}= require('jspdf')
@@ -100,11 +101,14 @@ function ordemsWindow(){
         width: 1015,
         height: 1010,
         icon: './src/public/img/trico.png',
-        autoHideMenuBar: true,
+        // autoHideMenuBar: true,
         resizable: false,
         minimizable: false,
         parent: main,
-        modal: true
+        modal: true,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js')
+      }
     })
   }
   ordems.loadFile('./src/views/ordem.html')

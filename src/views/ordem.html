@@ -18,14 +18,14 @@
                 <input type="text" class="form-control" id="searchOrdem" maxlength="30" spellcheck="false" placeholder="Buscar cliente">
             </div>
             <div class="col-md-5">
-                <button type="button" class="btn btn-primary" id="btnReadBuscar" onclick="searchClient()">Buscar</button>
+                <button type="button" class="btn btn-primary" id="btnReadBuscar" onclick="searchOrdem()">Buscar</button>
             </div>
             <hr class="mt-4 border border-primary border -1">
 
             <!-- Nº OS -->
             <div class="col-md-2">
                 <label  for="inputNumeroOs"  class="form-label">NºOS</label>
-                <input type="text" class="form-control" id="inputNumeroOs" disabled>
+                <input type="text" class="form-control" id="inputNumeroOs" >
             </div>
 
             <!-- Nº SÉRIE -->
@@ -36,7 +36,7 @@
             <!-- data de entrada -->
             <div class="col-md-3">
                 <label  for="inputDataEntrada" class="form-label">Data de Entrada</label>
-                <input type="date" class="form-control" id="inputDataEntrada" disabled>
+                <input type="date" class="form-control" id="inputDataEntrada" >
             </div>
 
             <!-- data de saída -->
@@ -48,21 +48,21 @@
             <div class="col-md-5">
                 <label for="inputNameOrdem" class="form-label">Nome</label>
                 <!-- <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30"> -->
-                <input type="text" class="form-control" id="inputNomeOrdem" disabled>
+                <input type="text" class="form-control" id="inputNomeOrdem" >
             </div>
 
             <!-- Telefone -->
             <div class="col-md-4">
                 <label for="inputTelefoneOrdem" class="form-label">Telefone</label>
                 <!-- <input type="text" class="form-control" id="inputTelefoneOrdem" spellcheck="false" maxlength="15"> -->
-                <input type="text" class="form-control" id="inputTelefoneOrdem" disabled>
+                <input type="text" class="form-control" id="inputTelefoneOrdem" >
             </div>
 
             <!-- CPF -->
             <div class="col-md-3">
                 <label for="inputCPFOrdem" class="form-label">CPF</label>
                 <!-- <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30"> -->
-                <input type="text" class="form-control" id="inputCPFOrdem" disabled>
+                <input type="text" class="form-control" id="inputCPFOrdem" >
             </div>
 
             
@@ -148,7 +148,7 @@
             <!-- Botões -->
             <div class="mt-5">
                 <!-- <button type="submit" class="btn btn-success" id="btnCreateO">Atualizar</button> -->
-                <button type="button" class="btn btn-success">Gerar OS</button>
+                <button type="submitO" class="btn btn-success">Gerar OS</button>
                 <button type="button" class="btn btn-warning" id="btnUpdateO">Editar OS</button>
                 <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir OS</button>
                 <button type="reiniciar" class=" btn btn-info" id="btnReiniciar" onclick="reiniciarForm()">Reiniciar</button>
@@ -157,7 +157,9 @@
         </form>
         
     </div>
-    <script src="../public/js/script.js"></script>
+    <!-- <script src="../public/js/script.js"></script> -->
+     <!-- Bootstrap -->
+    <script src="../public/js/bootstrap.min.js"></script>
     <script src="../views/rendererOrdem.js"></script>
 </body>
 </html>
