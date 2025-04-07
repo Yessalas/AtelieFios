@@ -93,11 +93,11 @@ function ordemsWindow(){
   nativeTheme.themeSource = 'light'
   // a linha abaixo obtém a janela principal
   const main = BrowserWindow.getFocusedWindow()
-  let ordems
+  let ordem
   // Estabelecer hierarquica entre janelas
   if (main){
     // criar a janela OS
-    ordems = new BrowserWindow({
+    ordem = new BrowserWindow({
         width: 1015,
         height: 1010,
         icon: './src/public/img/trico.png',
@@ -111,8 +111,8 @@ function ordemsWindow(){
       }
     })
   }
-  ordems.loadFile('./src/views/ordem.html')
-  ordems.center()
+  ordem.loadFile('./src/views/ordem.html')
+  ordem.center()
 }
 // -------------------------- Fim Janela OS (ordem de serviço) ------------------------------------------------
 
@@ -323,23 +323,23 @@ const template = [
   }
 })
 
-ipcMain.on('new-ordem', async (event, ordems) =>{
-  console.log(ordems)
+ipcMain.on('new-ordem', async (event, ordem) =>{
+  console.log(ordem)
   try {
     const newOrdem = new ordemModel({
-      numOsOrdem: ordems.numOsOrdem, 
-      numSerieOrdem: ordems.numSerieOrdem, 
-      DtEntradaOrdem: ordems.DtEntradaOrdem, 
-      DtSaidaOrdem: ordems.DtSaidaOrdem, 
-      NomeOrdem: ordems.NomeOrdem, 
-      TelefoneOrdem: ordems.TelefoneOrdem, 
-      CPFOrdem: ordems.CPFOrdem,
-      StatusOrdem: ordems.StatusOrdem, 
-      ServicoOrdem: ordems.ServicoOrde.value, 
-      QtdOrdem: ordems.QtdOrdem, 
-      MarcaOrdem: ordems.MarcaOrdem,
-      PgmtOrdem: ordems.PgmtOrdem,
-      ValorTlOrdem: ordems.ValorTlOrdem
+      numOs: ordem.numOsOrdem, 
+      numSerie: ordem.numSerieOrdem, 
+      DtEntrada: ordem.DtEntradaOrdem, 
+      DtSaida: ordem.DtSaidaOrdem, 
+      NomeCliente: ordem.NomeOrdem, 
+      Telefone: ordem.TelefoneOrdem, 
+      CPF: ordem.CPFOrdem,
+      StatusOs: ordem.StatusOrdem, 
+      Servico: ordem.ServicoOrde.value, 
+      Qtd: ordem.QtdOrdem, 
+      Marca: ordem.MarcaOrdem,
+      Pgmt: ordem.PgmtOrdem,
+      ValorTotal: ordem.ValorTlOrdem
   })
   await newOrdem.save() 
   } catch (error) {

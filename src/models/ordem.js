@@ -1,46 +1,48 @@
 const { model, Schema } = require('mongoose')
+// const { type } = require('os')
 
 // criação da estrutura da coleção Clientes
 const ordemSchema = new Schema({
-    numOsOrdem: {
+    numOs: {
         type: String
     },
-    numSerieOrdem:{
+    numSerie:{
         type: String
     } , 
-    DtEntradaOrdem:{
-
+    DtEntrada:{
+        type: Date,
+        default: Date.now
     } , 
-    DtSaidaOrdem:{
-        type: String
-    } , 
-    NomeOrdem:{
+    // DtSaida:{
+    //     type: String
+    // } , 
+    NomeCliente:{
         type: String
     }, 
-    TelefoneOrdem:{
+    Telefone:{
         type: String
     },
-    CPFOrdem:{
+    CPF:{
         type: String,
         unique:true,
         index: true
     },
-    StatusOrdem:{
+    StatusOs:{
         type: String
     },  
-    ServicoOrdem:{
+    Servico:{
         type: String
     }, 
-    QtdOrdem:{
+    Qtd:{
         type: String
     },  
-    MarcaOrdem:{
+    Marca:{
         type: String
     }, 
-    PgmtOrdem:{
+    Pgmt:{
         type: String
     },
-    ValorTlOrdem:{
+    ValorTotal:{
         type: String
     }
     

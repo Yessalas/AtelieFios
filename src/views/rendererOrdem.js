@@ -46,7 +46,7 @@ frmOrdem.addEventListener('submitO', async (event)=>{
         ValorTlOrdem.value
     )
     // criar um objeto para armazenar os dados do cliente antes de enviar ao main
-    const ordems = {
+    const ordem = {
         numOsOrdem: numOsOrdem.value, 
         numSerieOrdem: numSerieOrdem.value, 
         DtEntradaOrdem: DtEntradaOrdem.value, 
@@ -62,5 +62,5 @@ frmOrdem.addEventListener('submitO', async (event)=>{
         ValorTlOrdem: ValorTlOrdem.value
     }
     // enviar ao main o objeto client - passo 2 fluxo
-    api.newOrdem(ordems)
+    api.newOrdem(ordem)
 })

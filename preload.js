@@ -13,6 +13,6 @@ contextBridge.exposeInMainWorld('api', {
     fiosWindow: () => ipcRenderer.send('fios-window'),
     dbStatus: (message) => ipcRenderer.on('db-status', message),
     newClient: (client) => ipcRenderer.send('new-client', client),
-    newOrdem: (ordems) => ipcRenderer.send('new-ordem', ordems),
+    newOrdem: (ordem) => ipcRenderer.send('new-ordem', ordem),
     resetForm: (args) => ipcRenderer.on('reset-form', args)
  })
