@@ -14,5 +14,8 @@ contextBridge.exposeInMainWorld('api', {
     dbStatus: (message) => ipcRenderer.on('db-status', message),
     newClient: (client) => ipcRenderer.send('new-client', client),
     newOrdem: (ordem) => ipcRenderer.send('new-ordem', ordem),
-    resetForm: (args) => ipcRenderer.on('reset-form', args)
+    newFios: (fios) => ipcRenderer.send('new-fios', fios),
+    resetForm: (args) => ipcRenderer.on('reset-form', args),
+    resetFormFios: (args) => ipcRenderer.on('reset-form-fios', args)
+   
  })

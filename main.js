@@ -11,6 +11,8 @@ const { conectar, desconectar } = require('./database.js')
 // importação do schema clientes da camada model
 const clientModel = require ('./src/models/cliente.js')
 const ordemModel = require ('./src/models/ordem.js')
+const fiosModel = require ('./src/models/fios.js')
+
 
 // importaçpão do pacote jspdf (npm i jspdf)
 const {jspdf, default: jsPDF}= require('jspdf')
@@ -22,7 +24,7 @@ const createWindow = () => {
   nativeTheme.themeSource = 'light'
   let win = new BrowserWindow({
     width: 800,
-    height:600,
+    height: 600,
     icon: './src/public/img/trico.png',
     resizable: false,
     webPreferences:{
@@ -72,8 +74,8 @@ function clientWindow(){
   if (main){
     // criar a janela cliente
     client = new BrowserWindow({
-      width: 900,
-      height: 750,
+      width: 850,
+      height: 660,
       //autoHideMenuBar: true,
       resizable: false,
       parent: main,
@@ -129,17 +131,20 @@ function fiosWindow(){
         width: 900,
         height: 700,
         icon: './src/public/img/trico.png',
-        autoHideMenuBar: true,
+        //autoHideMenuBar: true,
         resizable: false,
         minimizable: false,
         parent: main,
-        modal: true
+        modal: true,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js')
+      }
     })
   }
   fios.loadFile('./src/views/fios.html')
   fios.center()
 }
-// -------------------------- Fim Janela OS (ordem de serviço) ------------------------------------------------
+// -------------------------- Fim Janela Fios (ordem de serviço) ------------------------------------------------
 // Iniciar a aplicação
 app.whenReady().then(() => {
   createWindow()
@@ -296,35 +301,37 @@ const template = [
         dialog.showMessageBox({
           //customização
           type: 'info',
-          title: "Aviso !",
+          title: "Aviso",
           message: "Cliente adicionado com sucesso",
-          buttons:['OK']
-          }).then((result)=>{
-          if(result.response === 0 ){
-              // enviar um pedido para o renderizador limpar os campos de resetar
-              // as configurações pré  definidas(rótulo 'reset - form)
+          buttons: ['OK']
+      }).then((result) => {
+          //ação ao pressionar o botão (result = 0)
+          if (result.response === 0) {
+              //enviar um pedido para o renderizador limpar os campos e resetar as configurações pré definidas (rótulo 'reset-form' do preload.js
               event.reply('reset-form')
           }
       })
   } catch (error) {
-    if (error.code === 11000){
-      dialog.showMessageBox({
-          type:'erro',
-          title:"Atenção!",
-          message:"CPF já está cadastrado \n Verifique se digitou corretamente",
-          buttons:['OK']
-      }).then((result)=> {
-          if(result.response === 0 ){
-              //
-          }
-      })
-  }
+      // se o código de erro for 11000 (cpf duplicado) enviar uma mensagem ao usuário
+      if (error.code === 11000) {
+          dialog.showMessageBox({
+              type: 'error',
+              title: "Atenção!",
+              message: "CPF já está cadastrado\nVerifique se digitou corretamente",
+              buttons: ['OK']
+          }).then((result) => {
+              if (result.response === 0) {
+                  // limpar a caixa de input do cpf, focar esta caixa e deixar a borda em vermelho
+              }
+          })
+      }
       console.log(error)
   }
 })
 
-ipcMain.on('new-ordem', async (event, ordem) =>{
-  console.log(ordem)
+ipcMain.on('new-ordem', async (event, ordem) => {
+  console.log( ordem)
+
   try {
     const newOrdem = new ordemModel({
       numOs: ordem.numOsOrdem, 
@@ -335,17 +342,59 @@ ipcMain.on('new-ordem', async (event, ordem) =>{
       Telefone: ordem.TelefoneOrdem, 
       CPF: ordem.CPFOrdem,
       StatusOs: ordem.StatusOrdem, 
-      Servico: ordem.ServicoOrde.value, 
+      Servico: ordem.ServicoOrdem,  
       Qtd: ordem.QtdOrdem, 
+      Desc: ordem.DescOrdem,
       Marca: ordem.MarcaOrdem,
       Pgmt: ordem.PgmtOrdem,
       ValorTotal: ordem.ValorTlOrdem
-  })
-  await newOrdem.save() 
+    })
+
+    await newOrdem.save()
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Sucesso',
+      message: 'Ordem de Serviço cadastrada com sucesso!',
+      buttons: ['OK']
+    }).then(() => {
+      event.reply('reset-form-os') // Você pode usar isso para limpar o form via preload.js
+    })
+
   } catch (error) {
-    console.log(error)
+    console.error('Erro ao salvar a OS:', error)
+    dialog.showErrorBox('Erro ao salvar OS', error.message || 'Verifique os dados e tente novamente.')
   }
 })
+
+
+ipcMain.on('new-fios', async (event, fios) => {
+  try {
+    const newFios = new fiosModel({
+      CodigoFios: fios.CodigoFios,
+      MarcaFios: fios.MarcaFios,
+      CorFios: fios.CorFios,
+      QtdFios: fios.QtdFios
+    })
+    await newFios.save()
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Sucesso',
+      message: 'Fio cadastrado com sucesso!',
+      buttons: ['OK']
+    }).then(() => {
+      event.reply('reset-form-fios')
+    })
+  } catch (error) {
+    if (error.code === 11000) {
+      dialog.showErrorBox('Erro', `Código de fio já cadastrado!`)
+    } else {
+      dialog.showErrorBox('Erro ao salvar fio', error.message)
+    }
+  }
+})
+  
 
 // RELATORIO DE CLIENTES
 async function relatorioClientes() {

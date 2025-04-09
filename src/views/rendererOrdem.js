@@ -1,66 +1,78 @@
+// Foco inicial e desabilitar botões
 const foco = document.getElementById('searchOrdem')
-// iniciar a janel de cliente alterando as propriedades de alguns elementos
-document.addEventListener('DOMContentLoaded',() => {
-    // desativar os botões
-    btnUpdateO.disabled= true
-    btnDeleteO.disabled= true
-    foco.focus()
+document.addEventListener('DOMContentLoaded', () => {
+  btnUpdateO.disabled = true
+  btnDeleteO.disabled = true
+  foco.focus()
 })
 
-// Captura dos dados dos input do funcionario (Passo 1: fluxo)
-let frmOrdem=document.getElementById('frmOrdem')
-let numOsOrdem=document.getElementById('inputNumeroOs')
-let numSerieOrdem=document.getElementById('inputNumeroSerie')
-let DtEntradaOrdem=document.getElementById('inputDataEntrada')
-let DtSaidaOrdem=document.getElementById('inputDataSaida')
-let NomeOrdem=document.getElementById('inputNomeOrdem')
-let TelefoneOrdem=document.getElementById('inputTelefoneOrdem')
-let CPFOrdem=document.getElementById('inputCPFOrdem')
-let StatusOrdem=document.getElementById('inputStatusOrdem')
-let ServicoOrdem=document.getElementById('inputServicoOrdem')
-let QtdOrdem=document.getElementById('inputQuantidadeOrdem')
-let MarcaOrdem=document.getElementById('inputMarcaOrdem')
-let PgmtOrdem=document.getElementById('inputPagamentoOrdem')
-let ValorTlOrdem=document.getElementById('inputValorOrdem')
+// Captura dos elementos do formulário
+const frmOrdem = document.getElementById('frmOrdem')
+const numOs = document.getElementById('inputNumeroOs')
+const numSerie = document.getElementById('inputNumeroSerie')
+const dtEntrada = document.getElementById('inputDataEntrada')
+const nome = document.getElementById('inputNomeOrdem')
+const telefone = document.getElementById('inputTelefoneOrdem')
+const cpf = document.getElementById('inputCPFOrdem')
+const status = document.getElementById('inputStatusOrdem')
+const servico = document.getElementById('inputServicoOrdem')
+const qtd = document.getElementById('inputQuantidadeOrdem')
+const desc = document.getElementById('inputDescOrdem')
+const marca = document.getElementById('inputMarcaOrdem')
+const pgmt = document.getElementById('inputPagamentoOrdem')
+const valor = document.getElementById('inputValorOrdem')
 
-// 
-// Evento associado ao botão submit (Uso das validações do HTML)
-frmOrdem.addEventListener('submitO', async (event)=>{
-    // Evitar o comportamento padrão do submit que é enviar os dados do formulário e reiniciar o documento HTML
-    event.preventDefault()
+// Função para resetar o formulário
+function reiniciarForm() {
+  location.reload()
+}
 
-    // Teste importante (Recebimento dos dados do formulário - Passo 1 do fluxo)
-    console.log(
-        numOsOrdem.value, 
-        numSerieOrdem.value, 
-        DtEntradaOrdem.value, 
-        DtSaidaOrdem.value, 
-        NomeOrdem.value, 
-        TelefoneOrdem.value, 
-        CPFOrdem.value,
-        StatusOrdem.value, 
-        ServicoOrdem.value, 
-        QtdOrdem.value, 
-        MarcaOrdem.value,
-        PgmtOrdem.value,
-        ValorTlOrdem.value
-    )
-    // criar um objeto para armazenar os dados do cliente antes de enviar ao main
-    const ordem = {
-        numOsOrdem: numOsOrdem.value, 
-        numSerieOrdem: numSerieOrdem.value, 
-        DtEntradaOrdem: DtEntradaOrdem.value, 
-        DtSaidaOrdem: DtSaidaOrdem.value, 
-        NomeOrdem: NomeOrdem.value, 
-        TelefoneOrdem: TelefoneOrdem.value, 
-        CPFOrdem: CPFOrdem.value,
-        StatusOrdem: StatusOrdem.value, 
-        ServicoOrdem: ServicoOrdem.value, 
-        QtdOrdem: QtdOrdem.value, 
-        MarcaOrdem: MarcaOrdem.value,
-        PgmtOrdem: PgmtOrdem.value,
-        ValorTlOrdem: ValorTlOrdem.value
-    }
-    // enviar ao main o objeto client - passo 2 fluxo
-    api.newOrdem(ordem)
+// Evento de envio
+frmOrdem.addEventListener('submit', async (event) => {
+  event.preventDefault()
+
+  // Teste no console
+  console.log(
+    numOs.value,
+    numSerie.value,
+    dtEntrada.value,
+    nome.value,
+    telefone.value,
+    cpf.value,
+    status.value,
+    servico.value,
+    qtd.value,
+    desc.value,
+    marca.value,
+    pgmt.value,
+    valor.value
+  )
+
+  const ordem = {
+    numOsOrdem: numOs.value,
+    numSerieOrdem: numSerie.value,
+    DtEntradaOrdem: dtEntrada.value || new Date().toISOString().slice(0, 10),
+    DtSaidaOrdem: null,
+    NomeOrdem: nome.value,
+    TelefoneOrdem: telefone.value,
+    CPFOrdem: cpf.value,
+    StatusOrdem: status.value,
+    ServicoOrdem: servico.value,
+    QtdOrdem: qtd.value,
+    DescOrdem: desc.value,
+    MarcaOrdem: marca.value,
+    PgmtOrdem: pgmt.value,
+    ValorTlOrdem: valor.value
+  }
+
+  // Enviar para o processo principal
+  api.newOrdem(ordem)
 })
+
+// Reset vindo do processo principal
+// Reset vindo do processo principal
+api.resetForm((args) => {
+    reiniciarForm()
+  })
+  
+  

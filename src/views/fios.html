@@ -10,14 +10,13 @@
     <meta http-equiv="content-Security-Policy" content="script-src 'self' 'unsafe-inline' ">
 </head>
 <body>
-    <h1>Fios e lans</h1>
+    <!-- <h1>Fios e lans</h1> -->
     <div class="container">
-      <form id="frmClient" class="mt-2 row g-3">
-        <form id="frmOrdem" class="mt-2 row g-3">
+        <form id="frmFios" class="mt-2 row g-3">
 
             <!-- buscar -->
             <div class="col-md-6">
-                <input type="text" class="form-control" id="searchClient" maxlength="30" spellcheck="false">
+                <input type="text" class="form-control" id="searchFios" maxlength="30" spellcheck="false">
             </div>
             <div class="col-md-4">
                 <button type="button" class="btn btn-primary" id="btnRead" onclick="searchClient()">Buscar</button>
@@ -25,35 +24,65 @@
 
             <hr class="mt-4 border border-primary border -1">
             
+            <!-- CÓDIGO  -->
+            <div class="col-md-2">
+              <label  for="inputCodFios"  class="form-label">Código</label>
+              <input type="text" class="form-control" id="inputCodFios" >
+            </div>
+
+          <!-- MARCA  -->
+          <div class="col-md-4">
+            <label  for="inputMarcaFios"  class="form-label">Marca</label>
+            <input type="text" class="form-control" id="inputMarcaFios" >
+          </div>
+
+          <!-- COR  -->
+          <div class="col-md-2">
+            <label  for="inputCorFios"  class="form-label">Cor</label>
+            <input type="text" class="form-control" id="inputCorFios">
+          </div>
+
+          <!-- QUANTIDADE  -->
+          <div class="col-md-2">
+            <label  for="inputQtdFios"  class="form-label">Qtd</label>
+            <input type="text" class="form-control" id="inputQtdFios">
+          </div>
+          
+          <hr class="mt-4 border border-primary border -1">
 
             <!-- tabela -->
             <div class="tabela">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th scope="col">Qtd.</th>
-                      <th scope="col">Produto</th>
-                      <th scope="col">Cor</th>
                       
+                      <th scope="col">Qtd.</th>
+                      <th scope="col">Marca</th>
+                      <th scope="col">Cor</th>
+                      <th scope="col">Cód</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
+                      
                       <th scope="row">1</th>
                       <td>EuroRoma</td>
                       <td>Rosa Malva</td>
-                      
+                      <td>#E0B0FF</td>
                     </tr>
                     <tr>
+                      
                       <th scope="row">2</th>
                       <td>Pingouin</td>
                       <td>Preta</td>
-                      
+                      <td>#000000</td>
                     </tr>
                     <tr>
+                      
                       <th scope="row">3</th>
                       <td scope="row">Lion Brand</td>
-                      <td>Azul</td>
+                      <td>Azul-Claro</td>
+                      <td>#ADD8E6</td>
                     </tr>
                   </tbody>
                   </table>
@@ -66,6 +95,8 @@
           </form>
     </div>
     
-    <script src="../public/js/script.js"></script>
+    <!-- <script src="../public/js/script.js"></script> -->
+    <script src="../views/rendererFios.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
 </body>
 </html>

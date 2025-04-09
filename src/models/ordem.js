@@ -36,6 +36,9 @@ const ordemSchema = new Schema({
     Qtd:{
         type: String
     },  
+    Desc:{
+        type: String
+    },
     Marca:{
         type: String
     }, 
