@@ -55,7 +55,7 @@ frmOrdem.addEventListener('submit', async (event) => {
     DtSaidaOrdem: null,
     NomeOrdem: nome.value,
     TelefoneOrdem: telefone.value,
-    CPFOrdem: cpf.value,
+    CPF: cpf.value,
     StatusOrdem: status.value,
     ServicoOrdem: servico.value,
     QtdOrdem: qtd.value,

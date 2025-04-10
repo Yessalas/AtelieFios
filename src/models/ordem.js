@@ -13,9 +13,7 @@ const ordemSchema = new Schema({
         type: Date,
         default: Date.now
     } , 
-    // DtSaida:{
-    //     type: String
-    // } , 
+    
     NomeCliente:{
         type: String
     }, 
@@ -23,9 +21,7 @@ const ordemSchema = new Schema({
         type: String
     },
     CPF:{
-        type: String,
-        unique:true,
-        index: true
+        type: String
     },
     StatusOs:{
         type: String
