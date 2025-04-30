@@ -69,10 +69,13 @@ frmOrdem.addEventListener('submit', async (event) => {
   api.newOrdem(ordem)
 })
 
-// Reset vindo do processo principal
-// Reset vindo do processo principal
-api.resetForm((args) => {
-    reiniciarForm()
-  })
+function resetFormOs(){
+  // limpar os campos e resetar o formulario com as configurações pré definidas
+  location.reload()
+}
+// recebimento  
+api.resetFormOs((args)=>{
+  resetFormOs()
+})
   
   

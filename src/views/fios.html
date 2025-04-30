@@ -16,11 +16,13 @@
 
             <!-- buscar -->
             <div class="col-md-6">
-                <input type="text" class="form-control" id="searchFios" maxlength="30" spellcheck="false">
+              <input type="text" class="form-control" id="searchFios" maxlength="30" spellcheck="false">
             </div>
             <div class="col-md-4">
-                <button type="button" class="btn btn-primary" id="btnRead" onclick="searchClient()">Buscar</button>
+              <button type="button" class="btn btn-primary" id="btnRead" onclick="searchClient()">Buscar</button>
             </div>
+            
+            
 
             <hr class="mt-4 border border-primary border -1">
             
@@ -37,7 +39,7 @@
           </div>
 
           <!-- COR  -->
-          <div class="col-md-2">
+          <div class="col-md-3">
             <label  for="inputCorFios"  class="form-label">Cor</label>
             <input type="text" class="form-control" id="inputCorFios">
           </div>
@@ -51,46 +53,26 @@
           <hr class="mt-4 border border-primary border -1">
 
             <!-- tabela -->
-            <div class="tabela">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      
-                      <th scope="col">Qtd.</th>
-                      <th scope="col">Marca</th>
-                      <th scope="col">Cor</th>
-                      <th scope="col">Cód</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      
-                      <th scope="row">1</th>
-                      <td>EuroRoma</td>
-                      <td>Rosa Malva</td>
-                      <td>#E0B0FF</td>
-                    </tr>
-                    <tr>
-                      
-                      <th scope="row">2</th>
-                      <td>Pingouin</td>
-                      <td>Preta</td>
-                      <td>#000000</td>
-                    </tr>
-                    <tr>
-                      
-                      <th scope="row">3</th>
-                      <td scope="row">Lion Brand</td>
-                      <td>Azul-Claro</td>
-                      <td>#ADD8E6</td>
-                    </tr>
-                  </tbody>
-                  </table>
+            <div style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Qtd.</th>
+                    <th scope="col">Marca</th>
+                    <th scope="col">Cor</th>
+                    <th scope="col">Cód</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaFios">
+                  <!-- conteúdo dinâmico -->
+                </tbody>
+              </table>
             </div>
             <div class="mt-5">
               <button type="submit" class="btn btn-success" id="btnCreate">Adicionar</button>
               <button type="submit" class="btn btn-warning" id="btnUpdate">Editar</button>
               <button type="button" class="btn btn-danger" id="btnDelete">Excluir</button>
+              <button type="reset" class="btn btn-info" id="btnReset" onclick="resetFormFios()">Reiniciar</button>
           </div>
           </form>
     </div>

@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld('api', {
     newOrdem: (ordem) => ipcRenderer.send('new-ordem', ordem),
     newFios: (fios) => ipcRenderer.send('new-fios', fios),
     resetForm: (args) => ipcRenderer.on('reset-form', args),
+    resetFormOs: (args) => ipcRenderer.on('reset-form-os', args),
+    listarFios: () => ipcRenderer.send('listar-fios'),
+    renderFios: (callback) => ipcRenderer.on('render-fios', (event, data) => callback(data)),
     resetFormFios: (args) => ipcRenderer.on('reset-form-fios', args)
-   
+    
  })

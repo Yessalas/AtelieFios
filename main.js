@@ -128,8 +128,8 @@ function fiosWindow(){
   if (main){
     // criar a janela fios
     fios = new BrowserWindow({
-        width: 900,
-        height: 700,
+        width: 950,
+        height: 750,
         icon: './src/public/img/trico.png',
         //autoHideMenuBar: true,
         resizable: false,
@@ -399,69 +399,151 @@ ipcMain.on('new-fios', async (event, fios) => {
 // RELATORIO DE CLIENTES
 async function relatorioClientes() {
   try {
-       const clientes = await clientModel.find().sort({
-           nomeCliente:1
-       })
-       const doc = new jsPDF('p', 'mm', 'a4')
+      // Passo 1: Consultar o banco de dados e obter a listagem de clientes cadastrados por ordem alfabética
+      const clientes = await clientModel.find().sort({ nomeCliente: 1 })
+      // teste de recebimento da listagem de clientes
+      //console.log(clientes)
+      // Passo 2:Formatação do documento pdf
+      // p - portrait | l - landscape | mm e a4 (folha A4 (210x297mm))
+      const doc = new jsPDF('p', 'mm', 'a4')
+      // Inserir imagem no documento pdf
+      // imagePath (caminho da imagem que será inserida no pdf)
+      // imageBase64 (uso da biblioteca fs par ler o arquivo no formato png)
+      const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+      const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+      doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
+      // definir o tamanho da fonte (tamanho equivalente ao word)
+      doc.setFontSize(18)
+      // escrever um texto (título)
+      doc.text("Relatório de clientes", 14, 45)//x, y (mm)
+      // inserir a data atual no relatório
+      const dataAtual = new Date().toLocaleDateString('pt-BR')
+      doc.setFontSize(12)
+      doc.text(`Data: ${dataAtual}`, 165, 10)
+      // variável de apoio na formatação
+      let y = 60
+      doc.text("Nome", 14, y)
+      doc.text("Telefone", 80, y)
+      doc.text("E-mail", 130, y)
+      y += 5
+      // desenhar uma linha
+      doc.setLineWidth(0.5) // expessura da linha
+      doc.line(10, y, 200, y) // 10 (inicio) ---- 200 (fim)
 
-       const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
-       const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64'})
-       doc.addImage(imageBase64, 'PNG', 5 ,8)  
+      // renderizar os clientes cadastrados no banco
+      y += 10 // espaçamento da linha
+      // percorrer o vetor clientes(obtido do banco) usando o laço forEach (equivale ao laço for)
+      clientes.forEach((c) => {
+          // adicionar outra página se a folha inteira for preenchida (estratégia é saber o tamnaho da folha)
+          // folha A4 y = 297mm
+          if (y > 280) {
+              doc.addPage()
+              y = 20 // resetar a variável y
+              // redesenhar o cabeçalho
+              doc.text("Nome", 14, y)
+              doc.text("Telefone", 80, y)
+              doc.text("E-mail", 130, y)
+              y += 5
+              doc.setLineWidth(0.5)
+              doc.line(10, y, 200, y)
+              y += 10
+          }
+          doc.text(c.nomeCliente, 14, y),
+              doc.text(c.foneCliente, 80, y),
+              doc.text(c.emailCliente || "N/A", 130, y)
+          y += 10 //quebra de linha
+      })
 
+      // Adicionar numeração automática de páginas
+      const paginas = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= paginas; i++) {
+          doc.setPage(i)
+          doc.setFontSize(10)
+          doc.text(`Página ${i} de ${paginas}`, 105, 290, { align: 'center' })
+      }
 
-
-       doc.setFontSize(16)
-       doc.text("Relatório do cliente", 14,40)
-
-       const dataAtual = new Date().toLocaleDateString('pt-BR')
-       doc.setFontSize(12)
-       doc.text(`Data:${dataAtual}`, 160, 10)
-       let y = 60
-       doc.text("Nome",14, y)
-       doc.text("Telefone", 80, y)
-       doc.text("E-mail", 130, y)
-
-      y+= 5
-      doc.setLineWidth(0.5)
-      doc.line(10,y,200,y)
-      y += 10
-
-
-       clientes.forEach((c) =>{
-           if(y > 280){
-               doc.appPage()
-               y = 20;
-               doc.text("Nome",14, y)
-               doc.text("Telefone", 80, y)
-               doc.text("E-mail", 130, y)
-               y += 5
-               doc.setLineWidth(0.5)
-               doc.line(10,y,200,y)
-               y += 10
-
-
-           }
-           doc.text(c.nomeCliente, 14, y)
-           doc.text(c.foneCliente, 80, y)
-           doc.text(c.emailCliente ||"N/A", 130, y)
-
-           y+=10
-       })
-
-       const paginas = doc.internal.getNumberOfPages()
-       for (let i = 1 ; i <= paginas; i++){
-           doc.setPage(i)
-           doc.setFontSize(10)
-           doc.text(`Página ${i} de ${paginas}`, 105,290, {align: 'center' })
-       }
-
-       const tempDir = app.getPath('temp')
-       const filePath = path.join(tempDir, 'client.pdf')
-       doc.save(filePath)
-       shell.openPath(filePath)
-       // teste de recebimento das listagens 
-       // console.log(clientes)
+      // Definir o caminho do arquivo temporário e nome do arquivo
+      const tempDir = app.getPath('temp')
+      const filePath = path.join(tempDir, 'clientes.pdf')
+      // salvar temporariamente o arquivo
+      doc.save(filePath)
+      // abrir o arquivo no aplicativo padrão de leitura de pdf do computador do usuário
+      shell.openPath(filePath)
   } catch (error) {
-   console.log(error)
-  } 
+      console.log(error)
+  }
 }
+
+
+ipcMain.on('validate-search', () =>{
+  dialog.showMessageBox({
+      type: 'warning',
+      title: "Atenção!!",
+      message: "Preencha o campo de busca",
+      buttons: ['OK']
+  })
+})
+
+
+ipcMain.on('search-name', async(event, name)=>{
+  try {
+      const dataClient = await clientModel.find({
+          $or: [
+              {nomeCliente: new RegExp(name, 'i') },
+              {cpfCliente: new RegExp(name, 'i') }
+            ]
+      })
+      console.log(dataClient)
+      if(dataClient.length === 0){
+          dialog.showMessageBox({
+              type:'question',
+              title:"Aviso",
+              message:"Cliente não cadastrado. \nDeseja Cadastrar este cliente?",
+              desfaultId:0,
+              buttons:['Sim', 'Não']
+          }).then((result)=>{
+              if(result.response === 0){
+                  event.reply('set-client')
+              }else{
+                  event.reply('reset-form')
+              }
+          })
+      }else{
+
+      }
+      event.reply('render-client', JSON.stringify(dataClient))
+  } catch (error) {
+      console.log(error)        
+  }
+})
+
+
+ipcMain.on('delete-client',async(event,id)=>{
+  console.log(id)
+  try {
+      const {response }= await dialog.showMessageBox(client,{
+          type:'warning',
+          title:"Atenção",
+          message:"Deseja excluir este cliente? \n Esta ação não podera ser desfeita.",
+          buttons:['Cancelar', 'Excluir']
+      })
+      if (result.response === 1) {
+          const  delClient = await clientModel.findByIdAndDelete(id)
+          event.reply('reset-form')
+      } else {
+          
+      }
+  } catch (error) {
+      console.log(error)
+  }
+})
+
+
+ipcMain.on('listar-fios', async (event) => {
+  try {
+    const fios = await fiosModel.find().sort({ MarcaFios: 1 })
+    event.reply('render-fios', JSON.stringify(fios))
+  } catch (error) {
+    console.error('Erro ao listar fios:', error)
+  }
+})

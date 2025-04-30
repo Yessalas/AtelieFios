@@ -88,3 +88,55 @@ api.resetForm((args)=>{
     resetForm()
 })
 /// =================================================================================
+function buscarCliente(){
+    let name=document.getElementById('searchClient').value
+    console.log(name)
+
+    if(name ===""){
+        //enviar um alerta para o usuario
+        api.validateSearch()
+        foco.focus()
+    } else {
+    api.searchName(name)
+
+    api.renderClient((event,dataClient)=>{
+        console.log(dataClient)
+
+        const dadosCliente = JSON.parse(dataClient)
+        arrayClient= dadosCliente
+        arrayClient.forEach((c) => {
+            id.value=c._id,
+            nameClient.value = c.nomeCliente,
+            cpfClient.value = c.cpfCliente,
+            emailClient.value=c.emailCliente, 
+            phoneClient.value=c.foneCliente, 
+            cepClient.value=c.cepCliente, 
+            addressClient.value=c.logradouroCliente, 
+            numberClient.value=c.numeroCliente,  
+            complementClient.value=c.complementoCliente, 
+            neighborhoodClient.value=c.bairroCliente, 
+            cityClient.value=c.cidadeCliente, 
+            ufClient.value=c.ufcCliente
+
+            // bloqueio do botão adicionar
+            btnCreate.disabled = true
+            // desbloqueio dos botões
+            btnUpdate.disabled = false
+            btnDelete.disabled = false
+        });
+    });
+};
+}
+
+api.setClient((args)=>{
+    let campoBusca = document.getElementById('searchClient').value
+    nameClient.focus()
+    foco.value =""
+    nameClient.value = campoBusca
+})
+
+
+function excluirCliente(){
+    console.log(id.value)
+    api.deleteClient(id)
+}
