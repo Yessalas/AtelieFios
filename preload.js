@@ -19,6 +19,12 @@ contextBridge.exposeInMainWorld('api', {
     resetFormOs: (args) => ipcRenderer.on('reset-form-os', args),
     listarFios: () => ipcRenderer.send('listar-fios'),
     renderFios: (callback) => ipcRenderer.on('render-fios', (event, data) => callback(data)),
-    resetFormFios: (args) => ipcRenderer.on('reset-form-fios', args)
+    resetFormFios: (args) => ipcRenderer.on('reset-form-fios', args),
+    searchName: (name) => ipcRenderer.send('search-name', name),
+    renderClient: (dataClient) => ipcRenderer.on('render-client', dataClient),
+    validateSearch: () => ipcRenderer.send('validate-search'),
+    setClient: (args) => ipcRenderer.on('set-client', args),
+    deleteClient: (id) => ipcRenderer.send('delete-client', id),
+    updateClient: (client) => ipcRenderer.send('update-client', client)
     
  })

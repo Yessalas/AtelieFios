@@ -74,6 +74,11 @@ footer p{
     margin-top: 10px;
   }
 
+  #idClient{
+    display: none;
+}
+
+
 
 
 
