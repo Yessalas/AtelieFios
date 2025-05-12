@@ -100,8 +100,8 @@ function ordemsWindow(){
   if (main){
     // criar a janela OS
     ordem = new BrowserWindow({
-        width: 1015,
-        height: 1010,
+      width: 950,
+      height: 760,
         icon: './src/public/img/trico.png',
         // autoHideMenuBar: true,
         resizable: false,

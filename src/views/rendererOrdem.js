@@ -1,19 +1,20 @@
-// Foco inicial e desabilitar botões
-const foco = document.getElementById('searchOrdem')
+// Foco inicial e desabilitar botões (opcional)
 document.addEventListener('DOMContentLoaded', () => {
-  btnUpdateO.disabled = true
-  btnDeleteO.disabled = true
-  foco.focus()
+  const btnUpdateO = document.getElementById('btnUpdateO')
+  const btnDeleteO = document.getElementById('btnDeleteO')
+
+  if (btnUpdateO && btnDeleteO) {
+    btnUpdateO.disabled = true
+    btnDeleteO.disabled = true
+  }
 })
 
 // Captura dos elementos do formulário
 const frmOrdem = document.getElementById('frmOrdem')
-const numOs = document.getElementById('inputNumeroOs')
-const numSerie = document.getElementById('inputNumeroSerie')
-const dtEntrada = document.getElementById('inputDataEntrada')
-const nome = document.getElementById('inputNomeOrdem')
-const telefone = document.getElementById('inputTelefoneOrdem')
-const cpf = document.getElementById('inputCPFOrdem')
+const numOs = document.getElementById('txtOs')
+const dtEntrada = document.getElementById('txtData')
+const nome = document.getElementById('inputNameClient')
+const telefone = document.getElementById('inputPhoneClient')
 const status = document.getElementById('inputStatusOrdem')
 const servico = document.getElementById('inputServicoOrdem')
 const qtd = document.getElementById('inputQuantidadeOrdem')
@@ -23,39 +24,21 @@ const pgmt = document.getElementById('inputPagamentoOrdem')
 const valor = document.getElementById('inputValorOrdem')
 
 // Função para resetar o formulário
-function reiniciarForm() {
+function resetFormOs() {
   location.reload()
 }
 
-// Evento de envio
+// Evento de envio do formulário
 frmOrdem.addEventListener('submit', async (event) => {
   event.preventDefault()
 
-  // Teste no console
-  console.log(
-    numOs.value,
-    numSerie.value,
-    dtEntrada.value,
-    nome.value,
-    telefone.value,
-    cpf.value,
-    status.value,
-    servico.value,
-    qtd.value,
-    desc.value,
-    marca.value,
-    pgmt.value,
-    valor.value
-  )
-
   const ordem = {
     numOsOrdem: numOs.value,
-    numSerieOrdem: numSerie.value,
     DtEntradaOrdem: dtEntrada.value || new Date().toISOString().slice(0, 10),
     DtSaidaOrdem: null,
     NomeOrdem: nome.value,
     TelefoneOrdem: telefone.value,
-    CPF: cpf.value,
+    CPF: "", // CPF não existe no HTML atual, ajuste se adicionar
     StatusOrdem: status.value,
     ServicoOrdem: servico.value,
     QtdOrdem: qtd.value,
@@ -69,13 +52,7 @@ frmOrdem.addEventListener('submit', async (event) => {
   api.newOrdem(ordem)
 })
 
-function resetFormOs(){
-  // limpar os campos e resetar o formulario com as configurações pré definidas
-  location.reload()
-}
-// recebimento  
-api.resetFormOs((args)=>{
+// Receber resposta e resetar formulário
+api.resetFormOs(() => {
   resetFormOs()
 })
-  
-  

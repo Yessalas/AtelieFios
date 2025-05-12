@@ -6,157 +6,141 @@
     <title>Ordem de serviço</title>
     <link rel="stylesheet" href="../public/css/bootstrap.min.css">
     <link rel="stylesheet" href="../public/css/style.css">
-
     <meta http-equiv="content-Security-Policy" content="script-src 'self' 'unsafe-inline' ">
 </head>
-<body>
-    <!-- <h1>Ordem de serviço</h1> -->
-    <div class="container">
-        <form id="frmOrdem" class="mt-2 row g-3">
-            <!-- buscar cliente -->
-            <div class="col-md-6">
-                <input type="text" class="form-control" id="searchOrdem" maxlength="30" spellcheck="false" placeholder="Buscar cliente">
-            </div>
-            <div class="col-md-5">
-                <button type="button" class="btn btn-primary" id="btnReadBuscar" onclick="searchOrdem()">Buscar</button>
-            </div>
-            <hr class="mt-4 border border-primary border -1">
+<body >
 
-            <!-- Nº OS -->
-            <div class="col-md-2">
-                <label  for="inputNumeroOs"  class="form-label">NºOS</label>
-                <input type="text" class="form-control" id="inputNumeroOs" disabled>
+    <div class="container mt-4 mb-5">
+        <form id="frmOrdem" class="row g-3">
+
+            <!-- OS -->
+            <div class="col-md-4">
+                <label class="form-label">Nº OS</label>
+                <input type="text" class="form-control" id="txtOs" disabled>
             </div>
 
-            <!-- Nº SÉRIE -->
+            <!-- Data -->
             <div class="col-md-3">
-                <label  for="inputNumeroSerie" class="form-label">NºSérie</label>
-                <input type="text" class="form-control" id="inputNumeroSerie" disabled >
-            </div>
-            <!-- data de entrada -->
-            <div class="col-md-3">
-                <label  for="inputDataEntrada" class="form-label">Data de Entrada</label>
-                <input type="date" class="form-control" id="inputDataEntrada" disabled>
+                <label class="form-label">Data</label>
+                <input type="text" class="form-control" id="txtData" disabled>
             </div>
 
-            <!-- data de saída -->
-            <!-- <div class="col-md-3">
-                <label for="inputDataSaida"  class="form-label">Data de saída</label>
-                <input type="date" class="form-control" id="inputDataSaida" >
-            </div> -->
+            <!-- Buscar cliente -->
+            <div class="col-md-5 position-relative">
+                <label for="inputSearchClient" class="form-label">Buscar Cliente</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="inputSearchClient" spellcheck="false"  maxlength="30">
+                    <span class="input-group-text">
+                        <img src="../public/img/search.png" alt="lupa" width="20">
+                    </span>
+                </div>
+                <ul id="viewListSuggestion" class="list-group position-absolute w-100"></ul>
+            </div>
+
+            <!-- Id -->
+            <div class="col-md-4">
+                <label for="inputIdClient" class="form-label">Id do cliente</label>
+                <input type="text" class="form-control" id="inputIdClient" spellcheck="false" maxlength="15" disabled>
+            </div>
+
             <!-- Nome -->
             <div class="col-md-5">
-                <label for="inputNameOrdem" class="form-label">Nome</label>
-                <!-- <input type="text" class="form-control" id="inputNameOrdem" spellcheck="false" required maxlength="30"> -->
-                <input type="text" class="form-control" id="inputNomeOrdem" >
+                <label for="inputNameClient" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="inputNameClient" spellcheck="false" maxlength="30" disabled>
             </div>
 
             <!-- Telefone -->
-            <div class="col-md-4">
-                <label for="inputTelefoneOrdem" class="form-label">Telefone</label>
-                <!-- <input type="text" class="form-control" id="inputTelefoneOrdem" spellcheck="false" maxlength="15"> -->
-                <input type="text" class="form-control" id="inputTelefoneOrdem" >
-            </div>
-
-            <!-- CPF -->
             <div class="col-md-3">
-                <label for="inputCPFOrdem" class="form-label">CPF</label>
-                <!-- <input type="email" class="form-control" id="inputEmailOrdem" spellcheck="false" maxlength="30"> -->
-                <input type="text" class="form-control" id="inputCPFOrdem" >
+                <label for="inputPhoneClient" class="form-label">Telefone</label>
+                <input type="text" class="form-control" id="inputPhoneClient" spellcheck="false" maxlength="15" disabled>
             </div>
 
-            
+            <input type="text" id="idClient" hidden>
 
-           
-            <!-- DESCRIÇÃO DO PEDIDO-->
-            <hr class="mt-4 border border-primary border -1">
-            <h2>Descrição do serviço </h2> 
-            <!-- STATUS DA OS -->
+            <hr class="mt-4">
+
+            <!-- Status -->
             <div class="col-md-4">
                 <label for="inputStatusOrdem" class="form-label">Status da OS</label>
-                <select class="form-select" id="inputStatusOrdem" name="UF" required>
+                <select class="form-select" id="inputStatusOrdem" required>
                     <option></option>
-                    <option >Aberta</option>
-                    <option >Em andamento</option>
-                    <option >Concluída</option>
+                    <option>Aberta</option>
+                    <option>Em andamento</option>
+                    <option>Concluída</option>
                 </select>
             </div>
+
             <!-- Serviço -->
             <div class="col-md-4">
                 <label for="inputServicoOrdem" class="form-label">Tipo de serviço</label>
-                <select class="form-select" id="inputServicoOrdem" name="UF" required>
+                <select class="form-select" id="inputServicoOrdem" required>
                     <option></option>
-                    <option >Encomenda</option>
-                    <option >Reparo de peça</option>
-                    <option >...</option>
+                    <option>Encomenda</option>
+                    <option>Reparo de peça</option>
+                    <option>...</option>
                 </select>
             </div>
 
-            <!-- Quantidade-->
+            <!-- Quantidade -->
             <div class="col-md-2">
                 <label for="inputQuantidadeOrdem" class="form-label">Qtd peça</label>
-                <input type="text" class="form-control" id="inputQuantidadeOrdem" spellcheck="false" maxlength="12">
+                <input type="text" class="form-control" id="inputQuantidadeOrdem" maxlength="12">
             </div>
-            
-            <!-- Descrição do pedido do cliente -->
-            <div class="form-floating">
-                <textarea class="form-control" placeholder="Leave a comment here" id="inputDescOrdem"></textarea>
+
+            <!-- Descrição -->
+            <div class="form-floating col-12">
+                <textarea class="form-control" placeholder="Descrição" id="inputDescOrdem" style="height: 100px;"></textarea>
                 <label for="inputDescOrdem">Descrição do pedido do cliente.</label>
             </div>
 
-            <!-- MARCA DO MATERIA (LÃ) -->
+            <!-- Marca -->
             <div class="col-md-3">
                 <label for="inputMarcaOrdem" class="form-label">Marca da lã</label>
-                <select class="form-select form-select-sm" id="inputMarcaOrdem" aria-label="Small select example" required>
-                    <option ></option>
+                <select class="form-select form-select-sm" id="inputMarcaOrdem" required>
+                    <option></option>
                     <option>Pingouin</option>
                     <option>EuroRoma</option>
                     <option>Lãs Cisne (Coats Corrente)</option>
-                    <option >Lion Brand</option>
+                    <option>Lion Brand</option>
                     <option>Red Heart</option>
-                    <option >Katia</option>
-                    <option >Merino</option>
+                    <option>Katia</option>
+                    <option>Merino</option>
                     <option>Círculo</option>
-                    
-                  </select>
+                </select>
             </div>
+
             <!-- Pagamento -->
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="inputPagamentoOrdem" class="form-label">Forma de pagamento</label>
-                <select class="form-select form-select-sm" id="inputPagamentoOrdem" aria-label="Small select example" required>
-                    <option ></option>
-                    <option >Dinheiro</option>
-                    <option >Pix</option>
-                    <option >Cartão - Débito</option>
+                <select class="form-select form-select-sm" id="inputPagamentoOrdem" required>
+                    <option></option>
+                    <option>Dinheiro</option>
+                    <option>Pix</option>
+                    <option>Cartão - Débito</option>
                     <option>Cartão - Crédito</option>
                 </select>
             </div>
-                         
-            <!-- Total Pagmento-->
-            <div class="container mt-3">
+
+            <!-- Total -->
+            <div class="col-md-4">
                 <label for="inputValorOrdem" class="form-label">Total a pagar:</label>
-                <div class="input-group w-25">
+                <div class="input-group">
                     <span class="input-group-text">R$</span>
                     <input type="text" id="inputValorOrdem" class="form-control text-end" placeholder="0,00">
                 </div>
             </div>
 
-            
             <!-- Botões -->
-            <div class="mt-5">
-                <!-- <button type="submit" class="btn btn-success" id="btnCreateO">Atualizar</button> -->
+            <div class="col-12 mt-4 d-flex justify-content-center gap-2 flex-wrap">
                 <button type="submit" class="btn btn-success">Gerar OS</button>
                 <button type="submit" class="btn btn-warning" id="btnUpdateO">Editar OS</button>
                 <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir OS</button>
                 <button type="reset" class="btn btn-info" id="btnReset" onclick="resetFormOs()">Reiniciar</button>
-
-                
             </div>
+
         </form>
-        
     </div>
-    <!-- <script src="../public/js/script.js"></script> -->
-     <!-- Bootstrap -->
+
     <script src="../public/js/bootstrap.min.js"></script>
     <script src="../views/rendererOrdem.js"></script>
 </body>
