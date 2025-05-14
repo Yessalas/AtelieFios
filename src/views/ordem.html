@@ -34,8 +34,10 @@
                         <img src="../public/img/search.png" alt="lupa" width="20">
                     </span>
                 </div>
+                 <!-- Lista de sugestões - estilo Google -->
                 <ul id="viewListSuggestion" class="list-group position-absolute w-100"></ul>
             </div>
+          
 
             <!-- Id -->
             <div class="col-md-4">
@@ -55,7 +57,7 @@
                 <input type="text" class="form-control" id="inputPhoneClient" spellcheck="false" maxlength="15" disabled>
             </div>
 
-            <input type="text" id="idClient" hidden>
+            <input type="text" id="idClient" hidden>  <!-- oculto -->
 
             <hr class="mt-4">
 
@@ -88,7 +90,7 @@
             </div>
 
             <!-- Descrição -->
-            <div class="form-floating col-12">
+            <div class=" col-md-12">
                 <textarea class="form-control" placeholder="Descrição" id="inputDescOrdem" style="height: 100px;"></textarea>
                 <label for="inputDescOrdem">Descrição do pedido do cliente.</label>
             </div>
@@ -126,13 +128,15 @@
                 <label for="inputValorOrdem" class="form-label">Total a pagar:</label>
                 <div class="input-group">
                     <span class="input-group-text">R$</span>
-                    <input type="text" id="inputValorOrdem" class="form-control text-end" placeholder="0,00">
+                    <input type="text" id="inputValorOrdem" class="form-control text-end" placeholder="0,00" oninput="formatarValor(this)">
+
                 </div>
             </div>
 
             <!-- Botões -->
             <div class="col-12 mt-4 d-flex justify-content-center gap-2 flex-wrap">
                 <button type="submit" class="btn btn-success">Gerar OS</button>
+                <button type="button" class="btn btn-primary" onclick="inputOS()">Buscar OS</button>
                 <button type="submit" class="btn btn-warning" id="btnUpdateO">Editar OS</button>
                 <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir OS</button>
                 <button type="reset" class="btn btn-info" id="btnReset" onclick="resetFormOs()">Reiniciar</button>

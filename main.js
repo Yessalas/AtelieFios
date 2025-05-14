@@ -401,6 +401,7 @@ ipcMain.on('new-fios', async (event, fios) => {
     }
   }
 })
+
   
 
 // RELATORIO DE CLIENTES
@@ -836,3 +837,49 @@ ipcMain.on('listar-fios', async (event) => {
     console.error('Erro ao listar fios:', error)
   }
 })
+
+// ============================================================
+// == Buscar OS ===============================================
+
+ipcMain.on('search-os', (event) => {
+  //console.log("teste: busca OS")
+  prompt({
+      title: 'Buscar OS',
+      label: 'Digite o número da OS:',
+      inputAttrs: {
+          type: 'text'
+      },
+      type: 'input',
+      width: 400,
+      height: 200
+  }).then((result) => {
+      if (result !== null) {
+          console.log(result)
+          //buscar a os no banco pesquisando pelo valor do result (número da OS)
+
+      }
+  })
+})
+
+// == Fim - Buscar OS =========================================
+// ============================================================
+
+
+// ============================================================
+// == Buscar cliente para vincular na OS(busca estilo Google) = 
+
+ipcMain.on('search-clients', async (event) => {
+  try {
+      // buscar no banco os clientes pelo nome em ordem alfabética
+      const clients = await clientModel.find().sort({ nomeCliente: 1 })
+      //console.log(clients) // teste do passo 2
+      // Passo 3: Envio dos clientes para o renderizador
+      // Obs: não esquecer de converter para String
+      event.reply('list-clients', JSON.stringify(clients))
+  } catch (error) {
+      console.log(error)
+  }
+})
+
+// == Fim - Busca Cliente (estilo Google) =====================
+// ============================================================
