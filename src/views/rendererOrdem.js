@@ -136,16 +136,43 @@ document.addEventListener('click', (event) => {
 // ==================================================
 
 
-// ==================================================
-// == Buscar OS =====================================
+// ============================================================
+// == Buscar OS - CRUD Read ===================================
 
-function inputOS() {
-    //console.log("teste do botão Buscar OS")
-    api.searchOS()
+function findOS() {
+  api.searchOS()
 }
 
-// == Fim - Buscar OS ===============================
-// ==================================================
+api.renderOS((event, dataOS) => {
+  console.log(dataOS)
+  const os = JSON.parse(dataOS)
+  // preencher os campos com os dados da OS
+  idOS.value = os._id
+  // formatar data:
+  const data = new Date(os.dataEntrada)
+  const formatada = data.toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+  })
+  dateOS.value = formatada
+  idClient.value = os.idCliente
+  statusOS.value = os.status
+  computer.value = os.computador
+  serial.value = os.serie
+  problem.value = os.problema
+  specialist.value = os.tecnico
+  diagnosis.value = os.diagnostico
+  parts.value = os.pecas
+  total.value = os.valor
+})
+
+// == Fim - Buscar OS - CRUD Read =============================
+// ============================================================
+
 
 
 // Receber resposta e resetar formulário
