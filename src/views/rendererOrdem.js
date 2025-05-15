@@ -173,6 +173,49 @@ api.renderOS((event, dataOS) => {
 // == Fim - Buscar OS - CRUD Read =============================
 // ============================================================
 
+//  marcas
+document.addEventListener('DOMContentLoaded', () => {
+  // Pedir marcas do banco
+  api.getTodasMarcas();
+
+  // Adiciona marcas que ainda não estão no select
+  api.receiveTodasMarcas((event, marcas) => {
+    const lista = JSON.parse(marcas);
+    const opcoesExistentes = [...marca.options].map(opt => opt.value.trim().toLowerCase());
+    
+    lista.forEach(marcaItem => {
+      if (!opcoesExistentes.includes(marcaItem.toLowerCase())) {
+        const opt = document.createElement('option');
+        opt.value = marcaItem;
+        opt.textContent = marcaItem;
+        marca.appendChild(opt);
+      }
+    });
+  });
+
+  // Quando a marca for selecionada, buscar cores no banco
+  marca.addEventListener('change', () => {
+    const marcaSelecionada = marca.value;
+    if (marcaSelecionada) {
+      api.getCoresPorMarca(marcaSelecionada);
+    }
+  });
+
+  // Adicionar cores que ainda não estão no select
+  api.receiveCoresPorMarca((event, cores) => {
+    const lista = JSON.parse(cores);
+    const opcoesExistentes = [...cor.options].map(opt => opt.value.trim().toLowerCase());
+
+    lista.forEach(corItem => {
+      if (!opcoesExistentes.includes(corItem.toLowerCase())) {
+        const opt = document.createElement('option');
+        opt.value = corItem;
+        opt.textContent = corItem;
+        cor.appendChild(opt);
+      }
+    });
+  });
+});
 
 
 // Receber resposta e resetar formulário
