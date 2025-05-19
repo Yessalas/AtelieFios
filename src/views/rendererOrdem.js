@@ -25,18 +25,27 @@ const numOs = document.getElementById('txtOs')
 const dtEntrada = document.getElementById('txtData')
 const nome = document.getElementById('inputNameClient')
 const telefone = document.getElementById('inputPhoneClient')
-const status = document.getElementById('inputStatusOrdem')
+const statusS = document.getElementById('inputStatusOrdem')
 const servico = document.getElementById('inputServicoOrdem')
 const qtd = document.getElementById('inputQuantidadeOrdem')
 const desc = document.getElementById('inputDescOrdem')
 const marca = document.getElementById('inputMarcaOrdem')
+const cor = document.getElementById('inputCorOrdem')
 const pgmt = document.getElementById('inputPagamentoOrdem')
 const valor = document.getElementById('inputValorOrdem')
 
+// capturar os id referente ao campo do nome
+const input = document.getElementById('inputSearchClient')
+// capturar o id do ul da lista de sugestões de clientes
+const suggestionList = document.getElementById('viewListSuggestion')
+// capturar os campos que vão ser preenchidos
+let idClient = document.getElementById('inputIdClient')
+
+let dateOS = document.getElementById('inputData')
+
+let idOS = document.getElementById('inputOS')
+
 // Função para resetar o formulário
-function resetFormOs() {
-  location.reload()
-}
 
 // Evento de envio do formulário
 frmOrdem.addEventListener('submit', async (event) => {
@@ -44,16 +53,15 @@ frmOrdem.addEventListener('submit', async (event) => {
 
   const ordem = {
     numOsOrdem: numOs.value,
-    DtEntradaOrdem: dtEntrada.value || new Date().toISOString().slice(0, 10),
-    DtSaidaOrdem: null,
+    idClientOrdem:idClient.value,
     NomeOrdem: nome.value,
-    TelefoneOrdem: telefone.value,
-    CPF: "", // CPF não existe no HTML atual, ajuste se adicionar
-    StatusOrdem: status.value,
+    TelefoneOrdem: telefone.value, 
+    StatusOrdem: statusS.value,
     ServicoOrdem: servico.value,
     QtdOrdem: qtd.value,
     DescOrdem: desc.value,
     MarcaOrdem: marca.value,
+    CorOrdem: cor.value,
     PgmtOrdem: pgmt.value,
     ValorTlOrdem: valor.value
   }
@@ -65,14 +73,6 @@ frmOrdem.addEventListener('submit', async (event) => {
 // ==================================================
 // == Busca avançada - estilo Google ================
 
-// capturar os id referente ao campo do nome
-const input = document.getElementById('inputSearchClient')
-// capturar o id do ul da lista de sugestões de clientes
-const suggestionList = document.getElementById('viewListSuggestion')
-// capturar os campos que vão ser preenchidos
-let idClient = document.getElementById('inputIdClient')
-let nameClient = document.getElementById('inputNameClient')
-let phoneClient = document.getElementById('inputPhoneClient')
 
 // vetor usado na manipulação (filtragem) dos dados
 let arrayClients = []
@@ -158,67 +158,30 @@ api.renderOS((event, dataOS) => {
       minute: "2-digit",
       second: "2-digit"
   })
-  dateOS.value = formatada
-  idClient.value = os.idCliente
-  statusOS.value = os.status
-  computer.value = os.computador
-  serial.value = os.serie
-  problem.value = os.problema
-  specialist.value = os.tecnico
-  diagnosis.value = os.diagnostico
-  parts.value = os.pecas
-  total.value = os.valor
+  dateOS.value = formatada  
+  idClient.value = os.IdCliente,
+  nome.value = os.NomeCliente, 
+  telefone.value = os.Telefone, 
+  statusS.value =os.StatusOs, 
+  servico.value = os.Servico,  
+  qtd.value = os.Qtd, 
+  desc.value = os.Desc,
+  marca.value = os.Marca,
+  cor.value = os.Cor,
+  pgmt.value = os.Pgmt,
+  valor.value = os.ValorTotal,
 })
 
 // == Fim - Buscar OS - CRUD Read =============================
 // ============================================================
 
-//  marcas
-document.addEventListener('DOMContentLoaded', () => {
-  // Pedir marcas do banco
-  api.getTodasMarcas();
-
-  // Adiciona marcas que ainda não estão no select
-  api.receiveTodasMarcas((event, marcas) => {
-    const lista = JSON.parse(marcas);
-    const opcoesExistentes = [...marca.options].map(opt => opt.value.trim().toLowerCase());
-    
-    lista.forEach(marcaItem => {
-      if (!opcoesExistentes.includes(marcaItem.toLowerCase())) {
-        const opt = document.createElement('option');
-        opt.value = marcaItem;
-        opt.textContent = marcaItem;
-        marca.appendChild(opt);
-      }
-    });
-  });
-
-  // Quando a marca for selecionada, buscar cores no banco
-  marca.addEventListener('change', () => {
-    const marcaSelecionada = marca.value;
-    if (marcaSelecionada) {
-      api.getCoresPorMarca(marcaSelecionada);
-    }
-  });
-
-  // Adicionar cores que ainda não estão no select
-  api.receiveCoresPorMarca((event, cores) => {
-    const lista = JSON.parse(cores);
-    const opcoesExistentes = [...cor.options].map(opt => opt.value.trim().toLowerCase());
-
-    lista.forEach(corItem => {
-      if (!opcoesExistentes.includes(corItem.toLowerCase())) {
-        const opt = document.createElement('option');
-        opt.value = corItem;
-        opt.textContent = corItem;
-        cor.appendChild(opt);
-      }
-    });
-  });
-});
-
 
 // Receber resposta e resetar formulário
+function resetFormOs() {
+  location.reload()
+}
+
+
 api.resetFormOs(() => {
   resetFormOs()
 })

@@ -341,18 +341,16 @@ ipcMain.on('new-ordem', async (event, ordem) => {
 
   try {
     const newOrdem = new ordemModel({
-      numOs: ordem.numOsOrdem, 
-      numSerie: ordem.numSerieOrdem, 
-      DtEntrada: ordem.DtEntradaOrdem, 
-      DtSaida: ordem.DtSaidaOrdem, 
+      numOs: ordem.numOsOrdem,    
+      IdCliente:ordem.idClientOrdem,
       NomeCliente: ordem.NomeOrdem, 
       Telefone: ordem.TelefoneOrdem, 
-      CPF: ordem.CPFOrdem,
       StatusOs: ordem.StatusOrdem, 
       Servico: ordem.ServicoOrdem,  
       Qtd: ordem.QtdOrdem, 
       Desc: ordem.DescOrdem,
       Marca: ordem.MarcaOrdem,
+      Cor: ordem.CorOrdem,
       Pgmt: ordem.PgmtOrdem,
       ValorTotal: ordem.ValorTlOrdem
     })
@@ -883,3 +881,5 @@ ipcMain.on('search-clients', async (event) => {
 
 // == Fim - Busca Cliente (estilo Google) =====================
 // ============================================================
+
+

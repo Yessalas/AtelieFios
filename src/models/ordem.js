@@ -6,10 +6,11 @@ const ordemSchema = new Schema({
     numOs: {
         type: String
     },
-    numSerie:{
-        type: String
-    } , 
     DtEntrada:{
+        type: Date,
+        default: Date.now
+    } , 
+    IdCliente:{
         type: Date,
         default: Date.now
     } , 
@@ -20,9 +21,7 @@ const ordemSchema = new Schema({
     Telefone:{
         type: String
     },
-    CPF:{
-        type: String
-    },
+    
     StatusOs:{
         type: String
     },  
@@ -38,6 +37,9 @@ const ordemSchema = new Schema({
     Marca:{
         type: String
     }, 
+    Cor: { 
+        type: String
+    },
     Pgmt:{
         type: String
     },
