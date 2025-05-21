@@ -52,7 +52,7 @@ frmOrdem.addEventListener('submit', async (event) => {
   event.preventDefault()
 
   const ordem = {
-    numOsOrdem: numOs.value,
+    // numOsOrdem: numOs.value,
     idClientOrdem:idClient.value,
     NomeOrdem: nome.value,
     TelefoneOrdem: telefone.value, 
@@ -69,6 +69,18 @@ frmOrdem.addEventListener('submit', async (event) => {
   // Enviar para o processo principal
   api.newOrdem(ordem)
 })
+
+
+// Receber resposta e resetar formulário
+function resetFormOs() {
+  location.reload()
+}
+
+
+api.resetFormOs(() => {
+  resetFormOs()
+})
+
 
 // ==================================================
 // == Busca avançada - estilo Google ================
@@ -114,8 +126,8 @@ input.addEventListener('input', () => {
             // adicionar um evento de clique no item da lista para preencher os campos do formulário
             item.addEventListener('click', () => {
                 idClient.value = c._id
-                nameClient.value = c.nomeCliente
-                phoneClient.value = c.foneCliente
+                nome.value = c.nomeCliente
+                telefone.value = c.foneCliente
                 // limpar o input e recolher a lista
                 input.value = ""
                 suggestionList.innerHTML = ""
@@ -169,19 +181,10 @@ api.renderOS((event, dataOS) => {
   marca.value = os.Marca,
   cor.value = os.Cor,
   pgmt.value = os.Pgmt,
-  valor.value = os.ValorTotal,
+  valor.value = os.ValorTotal
 })
 
 // == Fim - Buscar OS - CRUD Read =============================
 // ============================================================
 
 
-// Receber resposta e resetar formulário
-function resetFormOs() {
-  location.reload()
-}
-
-
-api.resetFormOs(() => {
-  resetFormOs()
-})
