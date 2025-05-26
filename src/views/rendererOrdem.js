@@ -8,21 +8,21 @@ function formatarValor(input) {
 
 
 
-// Foco inicial e desabilitar botões (opcional)
+// Iniciar a janela OS alterando as propriedades de alguns elementos
 document.addEventListener('DOMContentLoaded', () => {
-  const btnUpdateO = document.getElementById('btnUpdateO')
-  const btnDeleteO = document.getElementById('btnDeleteO')
-
-  if (btnUpdateO && btnDeleteO) {
-    btnUpdateO.disabled = true
-    btnDeleteO.disabled = true
-  }
+  // Desativar os botões
+  btnUpdate.disabled = true
+  btnDelete.disabled = true    
 })
+
+
+// criar um vetor para manipulação dos dados da OS
+let arrayOS = []
 
 // Captura dos elementos do formulário
 const frmOrdem = document.getElementById('frmOrdem')
-const numOs = document.getElementById('txtOs')
-const dtEntrada = document.getElementById('txtData')
+// const numOs = document.getElementById('txtOs')
+// const dtEntrada = document.getElementById('txtData')
 const nome = document.getElementById('inputNameClient')
 const telefone = document.getElementById('inputPhoneClient')
 const statusS = document.getElementById('inputStatusOrdem')
@@ -40,34 +40,71 @@ const input = document.getElementById('inputSearchClient')
 const suggestionList = document.getElementById('viewListSuggestion')
 // capturar os campos que vão ser preenchidos
 let idClient = document.getElementById('inputIdClient')
-
+// captura do id do campo data
 let dateOS = document.getElementById('inputData')
-
-let idOS = document.getElementById('inputOS')
+// captura do id da OS (CRUD Delete e Update)
+let idOS = document.getElementById('inputOs')
 
 // Função para resetar o formulário
 
 // Evento de envio do formulário
 frmOrdem.addEventListener('submit', async (event) => {
   event.preventDefault()
-
-  const ordem = {
-    // numOsOrdem: numOs.value,
-    idClientOrdem:idClient.value,
-    NomeOrdem: nome.value,
-    TelefoneOrdem: telefone.value, 
-    StatusOrdem: statusS.value,
-    ServicoOrdem: servico.value,
-    QtdOrdem: qtd.value,
-    DescOrdem: desc.value,
-    MarcaOrdem: marca.value,
-    CorOrdem: cor.value,
-    PgmtOrdem: pgmt.value,
-    ValorTlOrdem: valor.value
-  }
-
-  // Enviar para o processo principal
+if(idClient.value === ""){
+  api.validateClient()
+}else{
+  console.log(
+    idOS.value,
+    idClient.value,
+    nome.value,
+    telefone.value,
+    statusS.value,
+    servico.value,
+    qtd.value,
+    desc.value,
+    marca.value,
+    cor.value,
+    pgmt.value,
+    valor.value)
+    if(idOS.value === ""){
+      const ordem = {
+        // numOsOrdem: numOs.value,
+        idClientOrdem:idClient.value,
+        NomeOrdem: nome.value,
+        TelefoneOrdem: telefone.value, 
+        StatusOrdem: statusS.value,
+        ServicoOrdem: servico.value,
+        QtdOrdem: qtd.value,
+        DescOrdem: desc.value,
+        MarcaOrdem: marca.value,
+        CorOrdem: cor.value,
+        PgmtOrdem: pgmt.value,
+        ValorTlOrdem: valor.value
+      }
+      // Enviar para o processo principal
   api.newOrdem(ordem)
+    }else{
+      //editar os
+      const ordem = {
+        id_OS: idOS.value,
+        idClientOrdem:idClient.value,
+        NomeOrdem: nome.value,
+        TelefoneOrdem: telefone.value, 
+        StatusOrdem: statusS.value,
+        ServicoOrdem: servico.value,
+        QtdOrdem: qtd.value,
+        DescOrdem: desc.value,
+        MarcaOrdem: marca.value,
+        CorOrdem: cor.value,
+        PgmtOrdem: pgmt.value,
+        ValorTlOrdem: valor.value
+      }
+      api.updateOS(ordem)
+    }
+}
+  
+
+  
 })
 
 
@@ -132,9 +169,15 @@ input.addEventListener('input', () => {
                 input.value = ""
                 suggestionList.innerHTML = ""
             })
+            suggestionList.appendChild(item)
         })
     })
 })
+// setar o foco no campo de busca (validação de busca do cliente obrigatória)
+api.setSearch((args) => {
+  input.focus()
+})
+
 
 // Ocultar a lista ao clicar fora
 document.addEventListener('click', (event) => {
@@ -146,6 +189,17 @@ document.addEventListener('click', (event) => {
 
 // == Fim - busca avançada ==========================
 // ==================================================
+
+// ============================================================
+// == CRUD Delete =============================================
+
+function removeOS() {
+  console.log(idOS.value) // Passo 1 (receber do form o id da OS)
+  api.deleteOS(idOS.value) // Passo 2 (enviar o id da OS ao main)
+}
+
+// == Fim - CRUD Delete =======================================
+// ============================================================
 
 
 // ============================================================
@@ -161,7 +215,7 @@ api.renderOS((event, dataOS) => {
   // preencher os campos com os dados da OS
   idOS.value = os._id
   // formatar data:
-  const data = new Date(os.dataEntrada)
+  const data = new Date(os.DtEntrada)
   const formatada = data.toLocaleString("pt-BR", {
       day: "2-digit",
       month: "2-digit",
@@ -170,18 +224,24 @@ api.renderOS((event, dataOS) => {
       minute: "2-digit",
       second: "2-digit"
   })
-  dateOS.value = formatada  
-  idClient.value = os.IdCliente,
-  nome.value = os.NomeCliente, 
-  telefone.value = os.Telefone, 
-  statusS.value =os.StatusOs, 
-  servico.value = os.Servico,  
-  qtd.value = os.Qtd, 
-  desc.value = os.Desc,
-  marca.value = os.Marca,
-  cor.value = os.Cor,
-  pgmt.value = os.Pgmt,
-  valor.value = os.ValorTotal
+  dateOS.value = formatada;
+  idClient.value = os.IdCliente;
+  nome.value = os.NomeCliente;
+  telefone.value = os.Telefone; 
+  statusS.value =os.StatusOs; 
+  servico.value = os.Servico;  
+  qtd.value = os.Qtd;
+  desc.value = os.Desc;
+  marca.value = os.Marca;
+  cor.value = os.Cor;
+  pgmt.value = os.Pgmt;
+  valor.value = os.ValorTotal;
+
+  // desativar o botão adicionar
+  btnCreate.disabled = true
+  // ativar os botões editar e excluir
+  btnUpdate.disabled = false
+  btnDelete.disabled = false   
 })
 
 // == Fim - Buscar OS - CRUD Read =============================

@@ -15,21 +15,21 @@
 
             <!-- OS -->
             <div class="col-md-4">
-                <label class="form-label">Nº OS</label>
-                <input type="text" class="form-control" id="txtOs" disabled>
+                <label  for="inputOs" class="form-label">Nº OS</label>
+                <input type="text" class="form-control" id="inputOs" disabled>
             </div>
 
             <!-- Data -->
             <div class="col-md-3">
-                <label class="form-label">Data</label>
-                <input type="text" class="form-control" id="txtData" disabled>
+                <label  for="inputData" class="form-label">Data</label>
+                <input type="text" class="form-control" id="inputData" disabled>
             </div>
 
             <!-- Buscar cliente -->
             <div class="col-md-5 position-relative">
                 <label for="inputSearchClient" class="form-label">Buscar Cliente</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="inputSearchClient" spellcheck="false"  maxlength="30">
+                    <input type="text" class="form-control" id="inputSearchClient" spellcheck="false"  maxlength="30" >
                     <span class="input-group-text">
                         <img src="../public/img/search.png" alt="lupa" width="20">
                     </span>
@@ -148,10 +148,10 @@
 
             <!-- Botões -->
             <div class="col-12 mt-4 d-flex justify-content-center gap-2 flex-wrap">
-                <button type="submit" class="btn btn-success">Gerar OS</button>
+                <button type="submit" class="btn btn-success" id="btnCreate">Gerar OS</button>
                 <button type="button" class="btn btn-primary" onclick="findOS()" id="btnBuscaOS">Buscar OS</button>
-                <button type="submit" class="btn btn-warning" id="btnUpdateO">Editar OS</button>
-                <button type="button" class="btn btn-danger" id="btnDeleteO">Excluir OS</button>
+                <button type="submit" class="btn btn-warning" id="btnUpdate">Editar OS</button>
+                <button type="button" class="btn btn-danger" id="btnDelete"  onclick="removeOS()">Excluir OS</button>
                 <button type="reset" class="btn btn-info" id="btnReset" onclick="resetFormOs()">Reiniciar</button>
             </div>
 

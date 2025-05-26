@@ -23,7 +23,7 @@
   "dependencies": {
     "electron-prompt": "^1.7.0",
     "jspdf": "^3.0.1",
-    "mongoose": "^8.13.0",
+    "mongoose": "^8.15.0",
     "moongose": "^1.0.0"
   }
 }
