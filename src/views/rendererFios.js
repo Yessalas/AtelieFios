@@ -34,7 +34,18 @@ frmFios.addEventListener('submit', (e) => {
     QtdFios: parseInt(qtd.value)
   }
 
-  api.newFios(fios)
+  if (cod.dataset.id) {
+    fios._id = cod.dataset.id
+    api.updateFios(fios)
+  } else {
+    api.newFios(fios)
+  }
+})
+
+btnDelete.addEventListener('click', () => {
+  if (cod.dataset.id) {
+    api.deleteFios(cod.dataset.id)
+  }
 })
 
 function resetFormFios() {
@@ -58,6 +69,27 @@ function renderizarTabela(lista) {
       <td>${fio.CorFios}</td>
       <td>${fio.CodigoFios}</td>
     `
+    
+    // Adiciona evento de clique para selecionar e preencher os campos
+    linha.addEventListener('click', () => {
+      // Remover destaque anterior
+      document.querySelectorAll('#tabelaFios tr').forEach(row => row.classList.remove('table-primary'))
+      linha.classList.add('table-primary')
+
+      // Preencher os campos com os dados do fio selecionado
+      cod.value = fio.CodigoFios
+      marca.value = fio.MarcaFios
+      cor.value = fio.CorFios
+      qtd.value = fio.QtdFios
+
+      // Guardar o _id escondido no dataset
+      cod.dataset.id = fio._id
+
+      // Habilitar botões
+      btnUpdate.disabled = false
+      btnDelete.disabled = false
+    })
+
     tabela.appendChild(linha)
   })
 }
@@ -76,3 +108,5 @@ function searchClient() {
 
   renderizarTabela(filtrados)
 }
+
+

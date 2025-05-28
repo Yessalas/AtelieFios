@@ -25,7 +25,25 @@
             
 
             <hr class="mt-4 border border-primary border -1">
-            
+
+            <!-- tabela -->
+            <div style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Qtd.</th>
+                    <th scope="col">Marca</th>
+                    <th scope="col">Cor</th>
+                    <th scope="col">Cód</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaFios">
+                  <!-- conteúdo dinâmico -->
+                </tbody>
+              </table>
+            </div>
+
+            <hr class="mt-4 border border-primary border -1">
             <!-- CÓDIGO  -->
             <div class="col-md-2">
               <label  for="inputCodFios"  class="form-label">Código</label>
@@ -50,24 +68,9 @@
             <input type="text" class="form-control" id="inputQtdFios">
           </div>
           
+          
           <hr class="mt-4 border border-primary border -1">
 
-            <!-- tabela -->
-            <div style="max-height: 300px; overflow-y: auto;">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th scope="col">Qtd.</th>
-                    <th scope="col">Marca</th>
-                    <th scope="col">Cor</th>
-                    <th scope="col">Cód</th>
-                  </tr>
-                </thead>
-                <tbody id="tabelaFios">
-                  <!-- conteúdo dinâmico -->
-                </tbody>
-              </table>
-            </div>
             <div class="mt-5">
               <button type="submit" class="btn btn-success" id="btnCreate">Adicionar</button>
               <button type="submit" class="btn btn-warning" id="btnUpdate">Editar</button>

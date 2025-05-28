@@ -33,6 +33,17 @@ contextBridge.exposeInMainWorld('api', {
     listClients: (clients) => ipcRenderer.on('list-clients', clients),
     setSearch: (args) => ipcRenderer.on('set-search', args),
     deleteOS: (idOS) => ipcRenderer.send('delete-os', idOS),
-    updateOS: (os) => ipcRenderer.send('update-os', os)
-    
+    updateOS: (os) => ipcRenderer.send('update-os', os),
+
+
+
+    getMarcas: () => ipcRenderer.send('get-marcas'),
+onMarcasListadas: (callback) => ipcRenderer.on('marcas-listadas', (event, marcas) => callback(marcas)),
+
+getCoresPorMarca: (marca) => ipcRenderer.send('get-cores-por-marca', marca),
+onCoresListadas: (callback) => ipcRenderer.on('cores-listadas', (event, cores) => callback(cores)),
+
+updateFios: (fios) => ipcRenderer.send('update-fios', fios),
+deleteFios: (id) => ipcRenderer.send('delete-fios', id),
+printOS: () => ipcRenderer.send('print-os')
  })

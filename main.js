@@ -1003,3 +1003,177 @@ ipcMain.on('update-os', async (event, ordem) => {
 
 // == Fim Editar OS - CRUD Update =============================
 // ============================================================
+
+// Buscar marcas únicas
+ipcMain.on('get-marcas', async (event) => {
+  try {
+    const marcasBrutas = await fiosModel.find().select('MarcaFios -_id')
+
+    const marcasLimpa = marcasBrutas
+      .map(obj => obj.MarcaFios.trim())
+    
+    const marcasUnicas = [...new Set(marcasLimpa)]
+
+    event.reply('marcas-listadas', marcasUnicas)
+  } catch (error) {
+    console.error('Erro ao buscar marcas:', error)
+  }
+})
+
+// Buscar cores da marca selecionada
+ipcMain.on('get-cores-por-marca', async (event, marca) => {
+  try {
+    const cores = await fiosModel.find({ MarcaFios: marca }).distinct('CorFios')
+    event.reply('cores-listadas', cores)
+  } catch (error) {
+    console.error('Erro ao buscar cores da marca:', error)
+  }
+})
+
+// editar fioos
+ipcMain.on('update-fios', async (event, fios) => {
+  try {
+    await fiosModel.findByIdAndUpdate(fios._id, {
+      CodigoFios: fios.CodigoFios,
+      MarcaFios: fios.MarcaFios,
+      CorFios: fios.CorFios,
+      QtdFios: fios.QtdFios
+    })
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Sucesso',
+      message: 'Fio atualizado com sucesso!',
+      buttons: ['OK']
+    }).then(() => {
+      event.reply('reset-form-fios')
+    })
+  } catch (error) {
+    console.error('Erro ao atualizar fio:', error)
+  }
+})
+
+// excluir fios 
+ipcMain.on('delete-fios', async (event, id) => {
+  const { response } = await dialog.showMessageBox({
+    type: 'warning',
+    title: 'Confirmação',
+    message: 'Tem certeza que deseja excluir este fio?',
+    buttons: ['Cancelar', 'Excluir']
+  })
+
+  if (response === 1) {
+    try {
+      await fiosModel.findByIdAndDelete(id)
+      event.reply('reset-form-fios')
+    } catch (error) {
+      console.error('Erro ao excluir fio:', error)
+    }
+  }
+})
+
+
+// ============================================================
+// Impressão de OS ============================================
+
+ipcMain.on('print-os', async (event) => {
+  prompt({
+    title: 'Imprimir OS',
+    label: 'Digite o ID da OS:',
+    inputAttrs: { type: 'text' },
+    type: 'input',
+    width: 400,
+    height: 200
+  }).then(async (result) => {
+    if (!result) return;
+
+    if (!mongoose.Types.ObjectId.isValid(result)) {
+      return dialog.showMessageBox({
+        type: 'error',
+        title: "Atenção!",
+        message: "Código da OS inválido. Verifique e tente novamente.",
+        buttons: ['OK']
+      })
+    }
+
+    try {
+      const os = await ordemModel.findById(result)
+      if (!os) {
+        return dialog.showMessageBox({
+          type: 'warning',
+          title: "Aviso!",
+          message: "OS não encontrada.",
+          buttons: ['OK']
+        })
+      }
+
+      const cliente = await clientModel.findById(os.IdCliente)
+      const doc = new jsPDF('p', 'mm', 'a4')
+
+      const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+      const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+      doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
+      // definir o tamanho da fonte (tamanho equivalente ao word)
+      doc.setFontSize(18)
+      // escrever um texto (título)
+      doc.text("Ordem de Serviço", 14, 45, { align: 'center' }) // logo menor e alinhado
+      // doc.setFontSize(20)
+      // doc.text("Ordem de Serviço", 105, 20, { align: 'center' })
+
+      doc.setFontSize(12)
+      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10)
+
+      // Cliente
+      doc.setFontSize(14)
+      doc.text("Dados do Cliente:", 14, 50)
+      doc.setFontSize(12)
+      doc.text(`Nome: ${cliente.nomeCliente}`, 14, 58)
+      doc.text(`Telefone: ${cliente.foneCliente}`, 14, 64)
+      doc.text(`E-mail: ${cliente.emailCliente || 'N/A'}`, 14, 70)
+
+      // OS
+      doc.setFontSize(14)
+      doc.text("Informações da OS:", 14, 85)
+      doc.setFontSize(12)
+      doc.text(`Status: ${os.StatusOs}`, 14, 93)
+      doc.text(`Serviço: ${os.Servico}`, 14, 99)
+      doc.text(`Quantidade: ${os.Qtd}`, 14, 105)
+      doc.text(`Marca da Lã: ${os.Marca}`, 14, 111)
+      doc.text(`Cor da Lã: ${os.Cor}`, 14, 117)
+      doc.text(`Pagamento: ${os.Pgmt}`, 14, 123)
+      doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 129)
+
+      // Descrição (com quebra de texto automática)
+      doc.setFontSize(14)
+      doc.text("Descrição:", 14, 140)
+      doc.setFontSize(12)
+      const descricaoFormatada = doc.splitTextToSize(os.Desc, 180)
+      doc.text(descricaoFormatada, 14, 147)
+
+      // Termo de garantia
+      doc.setFontSize(10)
+      const termo = `
+Termo de Serviço e Garantia
+
+O cliente autoriza a realização dos serviços técnicos descritos nesta ordem, ciente de que:
+
+- Diagnóstico e orçamento são gratuitos apenas se o serviço for aprovado. Caso contrário, poderá ser cobrada taxa de análise.
+- Peças substituídas poderão ser retidas para descarte ou devolvidas mediante solicitação no ato do serviço.
+- A garantia dos serviços prestados é de 90 dias, conforme Art. 26 do CDC, e cobre exclusivamente o reparo executado ou peça trocada.
+- Não nos responsabilizamos por dados armazenados. Recomenda-se o backup prévio.
+- Equipamentos não retirados em até 90 dias estarão sujeitos a armazenagem ou descarte (Art. 1.275 do CC).
+- O cliente declara estar ciente e de acordo com os termos acima.`
+      const termoFormatado = doc.splitTextToSize(termo, 180)
+      doc.text(termoFormatado, 14, doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 170)
+
+      const tempDir = app.getPath('temp')
+      const filePath = path.join(tempDir, 'os.pdf')
+      doc.save(filePath)
+      shell.openPath(filePath)
+
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error)
+    }
+  })
+})
+

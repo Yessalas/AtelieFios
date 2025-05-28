@@ -13,6 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // Desativar os botões
   btnUpdate.disabled = true
   btnDelete.disabled = true    
+
+   // === Marcas e Cores ===
+   const marca = document.getElementById('inputMarcaOrdem')
+   const cor = document.getElementById('inputCorOrdem')
+ 
+   api.getMarcas()
+   api.onMarcasListadas((marcas) => {
+     marca.innerHTML = '<option></option>' + marcas.map(m => `<option>${m}</option>`).join('')
+   })
+ 
+   marca.addEventListener('change', () => {
+     const marcaSelecionada = marca.value
+     if (marcaSelecionada) {
+       api.getCoresPorMarca(marcaSelecionada)
+     }
+   })
+ 
+   api.onCoresListadas((cores) => {
+     cor.innerHTML = '<option></option>' + cores.map(c => `<option>${c}</option>`).join('')
+   })
+
 })
 
 
@@ -242,9 +263,25 @@ api.renderOS((event, dataOS) => {
   // ativar os botões editar e excluir
   btnUpdate.disabled = false
   btnDelete.disabled = false   
+
+  inputSearchClient.disabled = true
+})
+
+api.renderIdClient((event, dataClient) => {
+  console.log(dataClient)
 })
 
 // == Fim - Buscar OS - CRUD Read =============================
+// ============================================================
+
+// ============================================================
+// == Imprimir OS ============================================= 
+
+function generateOS() {
+  api.printOS()
+}
+
+// == Fm - Imprimir OS ======================================== 
 // ============================================================
 
 
