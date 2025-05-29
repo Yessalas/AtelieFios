@@ -1097,7 +1097,7 @@ ipcMain.on('print-os', async (event) => {
     }
 
     try {
-      const os = await ordemModel.findById(result)
+      const os = await ordemModel.findById(result);
       if (!os) {
         return dialog.showMessageBox({
           type: 'warning',
@@ -1107,8 +1107,8 @@ ipcMain.on('print-os', async (event) => {
         })
       }
 
-      const cliente = await clientModel.findById(os.IdCliente)
-      const doc = new jsPDF('p', 'mm', 'a4')
+      const cliente = await clientModel.findById(os.IdCliente);
+      const doc = new jsPDF('p', 'mm', 'a4');
 
       const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
       const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
@@ -1116,64 +1116,85 @@ ipcMain.on('print-os', async (event) => {
       // definir o tamanho da fonte (tamanho equivalente ao word)
       doc.setFontSize(18)
       // escrever um texto (título)
-      doc.text("Ordem de Serviço", 14, 45, { align: 'center' }) // logo menor e alinhado
+      doc.text("Ordem de Serviço", 100, 35, { align: 'center' }) // logo menor e alinhado
       // doc.setFontSize(20)
       // doc.text("Ordem de Serviço", 105, 20, { align: 'center' })
 
-      doc.setFontSize(12)
-      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10)
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10);
 
-      // Cliente
-      doc.setFontSize(14)
-      doc.text("Dados do Cliente:", 14, 50)
-      doc.setFontSize(12)
-      doc.text(`Nome: ${cliente.nomeCliente}`, 14, 58)
-      doc.text(`Telefone: ${cliente.foneCliente}`, 14, 64)
-      doc.text(`E-mail: ${cliente.emailCliente || 'N/A'}`, 14, 70)
+      // Barra - Dados do Cliente
+      doc.setFillColor(173, 216, 230);
+      doc.rect(10, 45, 190, 8, 'F');
+      doc.setTextColor(255);
+      doc.text("DADOS PESSOAIS", 14, 51);
+      doc.setTextColor(0);
+      doc.setFontSize(11);
+      doc.text(`Cliente: ${cliente.nomeCliente}`, 14, 60);
+      doc.text(`Telefone: ${cliente.foneCliente}`, 14, 66);
+      doc.text(`E-mail: ${cliente.emailCliente || 'N/A'}`, 14, 72);
+      doc.text(`Endereço: ${cliente.endereco || 'N/A'}`, 14, 78);
+      doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 84);
 
-      // OS
-      doc.setFontSize(14)
-      doc.text("Informações da OS:", 14, 85)
-      doc.setFontSize(12)
-      doc.text(`Status: ${os.StatusOs}`, 14, 93)
-      doc.text(`Serviço: ${os.Servico}`, 14, 99)
-      doc.text(`Quantidade: ${os.Qtd}`, 14, 105)
-      doc.text(`Marca da Lã: ${os.Marca}`, 14, 111)
-      doc.text(`Cor da Lã: ${os.Cor}`, 14, 117)
-      doc.text(`Pagamento: ${os.Pgmt}`, 14, 123)
-      doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 129)
+      // Barra - Descrição de Serviços
+      doc.setFillColor(173, 216, 230);
+      doc.rect(10, 92, 190, 8, 'F');
+      doc.setTextColor(255);
+      doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 98);
+      doc.setTextColor(0);
+      doc.setFontSize(11);
+      doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 106);
+      doc.text(`Quantidade: ${os.Qtd}`, 14, 112);
+      doc.text(`Marca da Lã: ${os.Marca}`, 14, 118);
+      doc.text(`Cor da Lã: ${os.Cor}`, 14, 124);
+      doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 130);
 
-      // Descrição (com quebra de texto automática)
-      doc.setFontSize(14)
-      doc.text("Descrição:", 14, 140)
-      doc.setFontSize(12)
-      const descricaoFormatada = doc.splitTextToSize(os.Desc, 180)
-      doc.text(descricaoFormatada, 14, 147)
+      // Observações (com fundo claro)
+      doc.setFillColor(240, 240, 240);
+      doc.rect(10, 138, 190, 20, 'F');
+      doc.setFontSize(11);
+      const desc = doc.splitTextToSize(os.Desc, 180);
+      doc.text("OBSERVAÇÕES:", 14, 145);
+      doc.text(desc, 14, 150);
+
+      // Observações do cliente (deixe espaço para preencher)
+      doc.setFillColor(173, 216, 230);
+      doc.rect(10, 165, 190, 8, 'F');
+      doc.setTextColor(255);
+      doc.text("OBSERVAÇÕES DO CLIENTE", 14, 171);
+      doc.setTextColor(0);
+      doc.rect(10, 175, 190, 20); // espaço em branco
 
       // Termo de garantia
-      doc.setFontSize(10)
       const termo = `
-Termo de Serviço e Garantia
+Termo de Serviço e Garantia:
+O cliente autoriza a confecção das peças de crochê conforme descrito nesta ordem de serviço, ciente de que:
 
-O cliente autoriza a realização dos serviços técnicos descritos nesta ordem, ciente de que:
+• O orçamento é gratuito, porém, caso o serviço seja cancelado após o início da produção, poderá ser cobrada uma taxa proporcional aos custos já incorridos.
+• Peças personalizadas não poderão ser devolvidas após o início da confecção, salvo em casos de defeito de execução.
+• A garantia é de 90 dias (conforme Art. 26 do CDC), limitada a defeitos de acabamento ou material.
+• Alterações após o início do trabalho podem gerar custos adicionais.
+• Peças não retiradas em até 90 dias poderão ser descartadas ou doadas (Art. 1.275 do CC).
+• O cliente declara estar ciente e de acordo com os termos acima.
+      `;
+      doc.setFontSize(9);
+      const termoFormatado = doc.splitTextToSize(termo, 180);
+      doc.text(termoFormatado, 14, 200);
 
-- Diagnóstico e orçamento são gratuitos apenas se o serviço for aprovado. Caso contrário, poderá ser cobrada taxa de análise.
-- Peças substituídas poderão ser retidas para descarte ou devolvidas mediante solicitação no ato do serviço.
-- A garantia dos serviços prestados é de 90 dias, conforme Art. 26 do CDC, e cobre exclusivamente o reparo executado ou peça trocada.
-- Não nos responsabilizamos por dados armazenados. Recomenda-se o backup prévio.
-- Equipamentos não retirados em até 90 dias estarão sujeitos a armazenagem ou descarte (Art. 1.275 do CC).
-- O cliente declara estar ciente e de acordo com os termos acima.`
-      const termoFormatado = doc.splitTextToSize(termo, 180)
-      doc.text(termoFormatado, 14, doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 170)
+      // Assinaturas
+      doc.line(14, 265, 90, 265);
+      doc.text("Assinatura do Cliente", 14, 270);
+      doc.line(110, 265, 190, 265);
+      doc.text("Assinatura do Atendente", 110, 270);
 
-      const tempDir = app.getPath('temp')
-      const filePath = path.join(tempDir, 'os.pdf')
-      doc.save(filePath)
-      shell.openPath(filePath)
+      const tempDir = app.getPath('temp');
+      const filePath = path.join(tempDir, 'os.pdf');
+      doc.save(filePath);
+      shell.openPath(filePath);
 
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error)
+      console.error('Erro ao gerar PDF:', error);
     }
-  })
-})
-
+  });
+});
