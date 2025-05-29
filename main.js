@@ -361,14 +361,27 @@ ipcMain.on('new-ordem', async (event, ordem) => {
 
     await newOrdem.save()
 
+    // Obter o ID gerado automaticamente pelo MongoDB
+    const osId = newOrdem._id
+    console.log("ID da nova OS:", osId)
+
     dialog.showMessageBox({
       type: 'info',
       title: 'Sucesso',
-      message: 'Ordem de Serviço cadastrada com sucesso!',
-      buttons: ['OK']
-    }).then(() => {
-      event.reply('reset-form-os') // Você pode usar isso para limpar o form via preload.js
-    })
+      message: 'Ordem de Serviço cadastrada com sucesso!\nDeseja imprimir esta OS?',
+      buttons: ['Sim', 'Não'] // [0, 1]',
+    }).then((result) => {
+      //ação ao pressionar o botão (result = 0)
+      if (result.response === 0) {
+          // executar a função printOS passando o id da OS como parâmetro
+          printOS(osId)
+          //enviar um pedido para o renderizador limpar os campos e resetar as configurações pré definidas (rótulo 'reset-form' do preload.js
+          event.reply('reset-form-os')
+      } else {
+          //enviar um pedido para o renderizador limpar os campos e resetar as configurações pré definidas (rótulo 'reset-form' do preload.js
+          event.reply('reset-form-os')
+      }
+  })
 
   } catch (error) {
     console.error('Erro ao salvar a OS:', error)
@@ -1198,3 +1211,103 @@ O cliente autoriza a confecção das peças de crochê conforme descrito nesta o
     }
   });
 });
+
+async function printOS(osId) {
+  try {
+    const dataOS = await ordemModel.findById(osId)
+
+    const dataClient = await clientModel.find({
+        _id: dataOS.IdCliente
+    })
+    console.log(dataClient)
+
+    const doc = new jsPDF('p', 'mm', 'a4');
+
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+    doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
+    // definir o tamanho da fonte (tamanho equivalente ao word)
+    doc.setFontSize(18)
+    // escrever um texto (título)
+    doc.text("Ordem de Serviço", 100, 35, { align: 'center' }) // logo menor e alinhado
+    // doc.setFontSize(20)
+    // doc.text("Ordem de Serviço", 105, 20, { align: 'center' })
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10);
+
+    // Barra - Dados do Cliente
+    doc.setFillColor(173, 216, 230);
+    doc.rect(10, 45, 190, 8, 'F');
+    doc.setTextColor(255);
+    doc.text("DADOS PESSOAIS", 14, 51);
+    doc.setTextColor(0);
+    doc.setFontSize(11);
+    doc.text(`Cliente: ${cliente.nomeCliente}`, 14, 60);
+    doc.text(`Telefone: ${cliente.foneCliente}`, 14, 66);
+    doc.text(`E-mail: ${cliente.emailCliente || 'N/A'}`, 14, 72);
+    doc.text(`Endereço: ${cliente.endereco || 'N/A'}`, 14, 78);
+    doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 84);
+
+    // Barra - Descrição de Serviços
+    doc.setFillColor(173, 216, 230);
+    doc.rect(10, 92, 190, 8, 'F');
+    doc.setTextColor(255);
+    doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 98);
+    doc.setTextColor(0);
+    doc.setFontSize(11);
+    doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 106);
+    doc.text(`Quantidade: ${os.Qtd}`, 14, 112);
+    doc.text(`Marca da Lã: ${os.Marca}`, 14, 118);
+    doc.text(`Cor da Lã: ${os.Cor}`, 14, 124);
+    doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 130);
+
+    // Observações (com fundo claro)
+    doc.setFillColor(240, 240, 240);
+    doc.rect(10, 138, 190, 20, 'F');
+    doc.setFontSize(11);
+    const desc = doc.splitTextToSize(os.Desc, 180);
+    doc.text("OBSERVAÇÕES:", 14, 145);
+    doc.text(desc, 14, 150);
+
+    // Observações do cliente (deixe espaço para preencher)
+    doc.setFillColor(173, 216, 230);
+    doc.rect(10, 165, 190, 8, 'F');
+    doc.setTextColor(255);
+    doc.text("OBSERVAÇÕES DO CLIENTE", 14, 171);
+    doc.setTextColor(0);
+    doc.rect(10, 175, 190, 20); // espaço em branco
+
+    // Termo de garantia
+    const termo = `
+Termo de Serviço e Garantia:
+O cliente autoriza a confecção das peças de crochê conforme descrito nesta ordem de serviço, ciente de que:
+
+• O orçamento é gratuito, porém, caso o serviço seja cancelado após o início da produção, poderá ser cobrada uma taxa proporcional aos custos já incorridos.
+• Peças personalizadas não poderão ser devolvidas após o início da confecção, salvo em casos de defeito de execução.
+• A garantia é de 90 dias (conforme Art. 26 do CDC), limitada a defeitos de acabamento ou material.
+• Alterações após o início do trabalho podem gerar custos adicionais.
+• Peças não retiradas em até 90 dias poderão ser descartadas ou doadas (Art. 1.275 do CC).
+• O cliente declara estar ciente e de acordo com os termos acima.
+    `;
+    doc.setFontSize(9);
+    const termoFormatado = doc.splitTextToSize(termo, 180);
+    doc.text(termoFormatado, 14, 200);
+
+    // Assinaturas
+    doc.line(14, 265, 90, 265);
+    doc.text("Assinatura do Cliente", 14, 270);
+    doc.line(110, 265, 190, 265);
+    doc.text("Assinatura do Atendente", 110, 270);
+
+    const tempDir = app.getPath('temp');
+    const filePath = path.join(tempDir, 'os.pdf');
+    doc.save(filePath);
+    shell.openPath(filePath);
+
+  } catch (error) {
+      console.log(error)
+  }
+}
+
