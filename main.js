@@ -1212,32 +1212,25 @@ O cliente autoriza a confecção das peças de crochê conforme descrito nesta o
   });
 });
 
+
+
 async function printOS(osId) {
   try {
-    const dataOS = await ordemModel.findById(osId)
-
-    const dataClient = await clientModel.find({
-        _id: dataOS.IdCliente
-    })
-    console.log(dataClient)
-
+    const os = await ordemModel.findById(osId);
+    const cliente = await clientModel.findById(os.IdCliente);
     const doc = new jsPDF('p', 'mm', 'a4');
 
-    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
-    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
-    doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
-    // definir o tamanho da fonte (tamanho equivalente ao word)
-    doc.setFontSize(18)
-    // escrever um texto (título)
-    doc.text("Ordem de Serviço", 100, 35, { align: 'center' }) // logo menor e alinhado
-    // doc.setFontSize(20)
-    // doc.text("Ordem de Serviço", 105, 20, { align: 'center' })
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png');
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' });
+    doc.addImage(imageBase64, 'PNG', 5, 8);
+    doc.setFontSize(18);
+    doc.text("Ordem de Serviço", 100, 35, { align: 'center' });
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
     doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10);
 
-    // Barra - Dados do Cliente
+    // Dados do Cliente
     doc.setFillColor(173, 216, 230);
     doc.rect(10, 45, 190, 8, 'F');
     doc.setTextColor(255);
@@ -1250,36 +1243,34 @@ async function printOS(osId) {
     doc.text(`Endereço: ${cliente.endereco || 'N/A'}`, 14, 78);
     doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 84);
 
-    // Barra - Descrição de Serviços
+    // Descrição de Serviços
     doc.setFillColor(173, 216, 230);
     doc.rect(10, 92, 190, 8, 'F');
     doc.setTextColor(255);
     doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 98);
     doc.setTextColor(0);
-    doc.setFontSize(11);
     doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 106);
     doc.text(`Quantidade: ${os.Qtd}`, 14, 112);
     doc.text(`Marca da Lã: ${os.Marca}`, 14, 118);
     doc.text(`Cor da Lã: ${os.Cor}`, 14, 124);
     doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 130);
 
-    // Observações (com fundo claro)
+    // Observações
     doc.setFillColor(240, 240, 240);
     doc.rect(10, 138, 190, 20, 'F');
-    doc.setFontSize(11);
     const desc = doc.splitTextToSize(os.Desc, 180);
     doc.text("OBSERVAÇÕES:", 14, 145);
     doc.text(desc, 14, 150);
 
-    // Observações do cliente (deixe espaço para preencher)
+    // Observações do cliente
     doc.setFillColor(173, 216, 230);
     doc.rect(10, 165, 190, 8, 'F');
     doc.setTextColor(255);
     doc.text("OBSERVAÇÕES DO CLIENTE", 14, 171);
     doc.setTextColor(0);
-    doc.rect(10, 175, 190, 20); // espaço em branco
+    doc.rect(10, 175, 190, 20);
 
-    // Termo de garantia
+    // Termo
     const termo = `
 Termo de Serviço e Garantia:
 O cliente autoriza a confecção das peças de crochê conforme descrito nesta ordem de serviço, ciente de que:
@@ -1305,9 +1296,7 @@ O cliente autoriza a confecção das peças de crochê conforme descrito nesta o
     const filePath = path.join(tempDir, 'os.pdf');
     doc.save(filePath);
     shell.openPath(filePath);
-
   } catch (error) {
-      console.log(error)
+    console.log(error);
   }
 }
-

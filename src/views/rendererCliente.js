@@ -105,26 +105,41 @@ frmClient.addEventListener('submit', async (event) => {
     // Teste importante (recebimento dos dados do formuláro - passo 1 do fluxo)
     console.log(nameClient.value, cpfClient.value, emailClient.value, phoneClient.value, cepClient.value, addressClient.value, numberClient.value, complementClient.value, neighborhoodClient.value, cityClient.value, ufcClient.value)
     //Criar um objeto para armazenar os dados do cliente antes de enviar ao main
-    const client = {
-        idCli: id.value,
-        nameCli: nameClient.value,
-        cpfCli: cpfClient.value,
-        emailCli: emailClient.value,
-        phoneCli: phoneClient.value,
-        cepCli: cepClient.value,
-        addressCli: addressClient.value,
-        numberCli: numberClient.value,
-        complementCli: complementClient.value,
-        neighborhoodCli: neighborhoodClient.value,
-        cityCli: cityClient.value,
-        ufcCli: ufcClient.value
-    }
+    
 
     if (id.value === "") {
         // Se id está vazio, cria novo cliente
+        const client = {
+            nameClient: nameClient.value,
+            cpfClient: cpfClient.value,
+            emailClient: emailClient.value,
+            phoneClient: phoneClient.value,
+            cepClient: cepClient.value,
+            addressClient: addressClient.value,
+            numberClient: numberClient.value,
+            complementClient: complementClient.value,
+            neighborhoodClient: neighborhoodClient.value,
+            cityClient: cityClient.value,
+            ufClient: ufcClient.value
+        }
+        
         api.newClient(client)
     } else {
         // Se id tem valor, atualiza cliente
+        const client = {
+            idCli: id.value,
+            nameClient: nameClient.value,
+            cpfClient: cpfClient.value,
+            emailClient: emailClient.value,
+            phoneClient: phoneClient.value,
+            cepClient: cepClient.value,
+            addressClient: addressClient.value,
+            numberClient: numberClient.value,
+            complementClient: complementClient.value,
+            neighborhoodClient: neighborhoodClient.value,
+            cityClient: cityClient.value,
+            ufClient: ufcClient.value
+        }
         api.updateClient(client)
     }
 })
