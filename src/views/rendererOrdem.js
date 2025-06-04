@@ -6,6 +6,15 @@ function formatarValor(input) {
   input.value = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.'); // Adiciona pontos como separadores de milhar
 }
 
+function ensureOption(selectElement, value) {
+  const exists = Array.from(selectElement.options).some(opt => opt.value === value)
+  if (!exists && value) {
+    const option = document.createElement('option')
+    option.value = value
+    option.text = `${value} (antiga)`  // mostra que essa opção não está mais na lista atual
+    selectElement.appendChild(option)
+  }
+}
 
 
 // Iniciar a janela OS alterando as propriedades de alguns elementos
@@ -257,12 +266,33 @@ api.renderOS((event, dataOS) => {
   desc.value = os.Desc;
 
   // Marca e cor (ajuste importante aqui!)
-  marca.value = os.Marca;
-  marca.dispatchEvent(new Event('change')); // força o carregamento das cores
+  // Verifica se a marca existe nas opções
+  const marcaExistente = Array.from(marca.options).some(option => option.value === os.Marca)
+  if (!marcaExistente && os.Marca) {
+    const option = document.createElement('option')
+    option.value = os.Marca
+    option.textContent = os.Marca + " (esgotado)"
+    option.selected = true
+    marca.appendChild(option)
+  } else {
+    marca.value = os.Marca
+  }
+
+  marca.dispatchEvent(new Event('change')) // força o carregamento das cores
 
   setTimeout(() => {
-    cor.value = os.Cor;
-  }, 200); // aguarda o carregamento antes de definir a cor
+    // Verifica se a cor existe nas opções
+    const corExistente = Array.from(cor.options).some(option => option.value === os.Cor)
+    if (!corExistente && os.Cor) {
+      const optionCor = document.createElement('option')
+      optionCor.value = os.Cor
+      optionCor.textContent = os.Cor + " (esgotado)"
+      optionCor.selected = true
+      cor.appendChild(optionCor)
+    } else {
+      cor.value = os.Cor
+    }
+  }, 200)
 
   pgmt.value = os.Pgmt;
   valor.value = os.ValorTotal;
