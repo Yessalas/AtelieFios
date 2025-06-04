@@ -128,19 +128,20 @@ frmClient.addEventListener('submit', async (event) => {
         // Se id tem valor, atualiza cliente
         const client = {
             idCli: id.value,
-            nameClient: nameClient.value,
-            cpfClient: cpfClient.value,
-            emailClient: emailClient.value,
-            phoneClient: phoneClient.value,
-            cepClient: cepClient.value,
-            addressClient: addressClient.value,
-            numberClient: numberClient.value,
-            complementClient: complementClient.value,
-            neighborhoodClient: neighborhoodClient.value,
-            cityClient: cityClient.value,
-            ufClient: ufcClient.value
+            nameCli: nameClient.value,
+            cpfCli: cpfClient.value,
+            emailCli: emailClient.value,
+            phoneCli: phoneClient.value,
+            cepCli: cepClient.value,
+            addressCli: addressClient.value,
+            numberCli: numberClient.value,
+            complementCli: complementClient.value,
+            neighborhoodCli: neighborhoodClient.value,
+            cityCli: cityClient.value,
+            ufcCli: ufcClient.value
         }
         api.updateClient(client)
+        
     }
 })
 

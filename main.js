@@ -500,234 +500,229 @@ async function relatorioClientes() {
 // RELATORIO DE OS
 async function relatorioOSaberta() {
   try {
-      // Passo 1: Consultar o banco de dados e obter a listagem de clientes cadastrados por ordem alfabética
-      const clientes = await ordemModel.find({ StatusOs: 'Aberta' }).sort({ NomeCliente: 1 })
-      // teste de recebimento da listagem de clientes
-      //console.log(clientes)
-      // Passo 2:Formatação do documento pdf
-      // p - portrait | l - landscape | mm e a4 (folha A4 (210x297mm))
-      const doc = new jsPDF('p', 'mm', 'a4')
-      // Inserir imagem no documento pdf
-      // imagePath (caminho da imagem que será inserida no pdf)
-      // imageBase64 (uso da biblioteca fs par ler o arquivo no formato png)
-      const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
-      const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
-      doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
-      // definir o tamanho da fonte (tamanho equivalente ao word)
-      doc.setFontSize(18)
-      // escrever um texto (título)
-      doc.text("Relatório de Ordem de serviço", 14, 45)//x, y (mm)
-      // inserir a data atual no relatório
-      const dataAtual = new Date().toLocaleDateString('pt-BR')
-      doc.setFontSize(12)
-      doc.text(`Data: ${dataAtual}`, 165, 10)
-      // variável de apoio na formatação
-      let y = 60
-      doc.text("Nome", 14, y)
-      doc.text("StatusOS", 80, y)
-      doc.text("Telefone", 130, y)
-      y += 5
-      // desenhar uma linha
-      doc.setLineWidth(0.5) // expessura da linha
-      doc.line(10, y, 200, y) // 10 (inicio) ---- 200 (fim)
+    // Buscar OS com status "Aberta"
+    const ordens = await ordemModel.find({ StatusOs: 'Aberta' }).sort({ NomeCliente: 1 })
 
-      // renderizar os clientes cadastrados no banco
-      y += 10 // espaçamento da linha
-      // percorrer o vetor clientes(obtido do banco) usando o laço forEach (equivale ao laço for)
-      clientes.forEach((c) => {
-          // adicionar outra página se a folha inteira for preenchida (estratégia é saber o tamnaho da folha)
-          // folha A4 y = 297mm
-          if (y > 280) {
-              doc.addPage()
-              y = 20 // resetar a variável y
-              // redesenhar o cabeçalho
-              doc.text("Nome", 14, y)
-              doc.text("StatusOS", 80, y)
-              doc.text("Telefone", 130, y)
-              y += 5
-              doc.setLineWidth(0.5)
-              doc.line(10, y, 200, y)
-              y += 10
-          }
-          doc.text(c.NomeCliente, 14, y),
-              doc.text(c.StatusOs, 80, y),
-              doc.text(c.Telefone || "N/A", 130, y)
-          y += 10 //quebra de linha
-      })
+    // Criar o PDF em modo paisagem
+    const doc = new jsPDF('l', 'mm', 'a4') // 'l' = landscape
 
-      // Adicionar numeração automática de páginas
-      const paginas = doc.internal.getNumberOfPages()
-      for (let i = 1; i <= paginas; i++) {
-          doc.setPage(i)
-          doc.setFontSize(10)
-          doc.text(`Página ${i} de ${paginas}`, 105, 290, { align: 'center' })
+    // Inserir logo
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+    doc.addImage(imageBase64, 'PNG', 5, 8)
+
+    // Título e data
+    doc.setFontSize(18)
+    doc.text("Relatório de Ordens de Serviço Abertas", 14, 45)
+    const dataAtual = new Date().toLocaleDateString('pt-BR')
+    doc.setFontSize(12)
+    doc.text(`Data: ${dataAtual}`, 260, 10)
+
+    // Cabeçalhos ajustados
+    let y = 60
+    doc.setFontSize(12)
+    doc.text("ID da OS", 14, y)
+    doc.text("Cliente", 90, y)       // <-- antes era 70
+    doc.text("Status", 180, y)
+    doc.text("Telefone", 230, y)
+    y += 5
+    doc.setLineWidth(0.5)
+    doc.line(10, y, 285, y) // linha horizontal
+    y += 10
+
+    // Dados
+    ordens.forEach((os) => {
+      if (y > 190) {
+        doc.addPage()
+        y = 20
+        doc.setFontSize(12)
+        doc.text("ID da OS", 14, y)
+        doc.text("Cliente", 90, y)
+        doc.text("Status", 180, y)
+        doc.text("Telefone", 230, y)
+        y += 5
+        doc.line(10, y, 285, y)
+        y += 10
       }
 
-      // Definir o caminho do arquivo temporário e nome do arquivo
-      const tempDir = app.getPath('temp')
-      const filePath = path.join(tempDir, 'os-aberta.pdf')
-      // salvar temporariamente o arquivo
-      doc.save(filePath)
-      // abrir o arquivo no aplicativo padrão de leitura de pdf do computador do usuário
-      shell.openPath(filePath)
+      doc.setFontSize(11)
+      doc.text(os._id.toString(), 14, y)
+      doc.text(os.NomeCliente, 90, y)
+      doc.text(os.StatusOs, 180, y)
+      doc.text(os.Telefone || "N/A", 230, y)
+      y += 10
+    })
+
+    // Numeração de páginas
+    const totalPaginas = doc.internal.getNumberOfPages()
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i)
+      doc.setFontSize(10)
+      doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
+    }
+
+    // Salvar e abrir
+    const tempDir = app.getPath('temp')
+    const filePath = path.join(tempDir, 'os-aberta.pdf')
+    doc.save(filePath)
+    shell.openPath(filePath)
+
   } catch (error) {
-      console.log(error)
+    console.error('Erro ao gerar relatório de OS abertas:', error)
   }
 }
+
 
 
 async function relatorioOSandamento() {
   try {
-      // Passo 1: Consultar o banco de dados e obter a listagem de clientes cadastrados por ordem alfabética
-      const clientes = await ordemModel.find({ StatusOs: 'Em andamento' }).sort({ NomeCliente: 1 })
-      // teste de recebimento da listagem de clientes
-      //console.log(clientes)
-      // Passo 2:Formatação do documento pdf
-      // p - portrait | l - landscape | mm e a4 (folha A4 (210x297mm))
-      const doc = new jsPDF('p', 'mm', 'a4')
-      // Inserir imagem no documento pdf
-      // imagePath (caminho da imagem que será inserida no pdf)
-      // imageBase64 (uso da biblioteca fs par ler o arquivo no formato png)
-      const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
-      const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
-      doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
-      // definir o tamanho da fonte (tamanho equivalente ao word)
-      doc.setFontSize(18)
-      // escrever um texto (título)
-      doc.text("Relatório de Ordem de serviço", 14, 45)//x, y (mm)
-      // inserir a data atual no relatório
-      const dataAtual = new Date().toLocaleDateString('pt-BR')
-      doc.setFontSize(12)
-      doc.text(`Data: ${dataAtual}`, 165, 10)
-      // variável de apoio na formatação
-      let y = 60
-      doc.text("Nome", 14, y)
-      doc.text("StatusOS", 80, y)
-      doc.text("Telefone", 130, y)
-      y += 5
-      // desenhar uma linha
-      doc.setLineWidth(0.5) // expessura da linha
-      doc.line(10, y, 200, y) // 10 (inicio) ---- 200 (fim)
+    // Buscar OS com status "Aberta"
+    const ordens = await ordemModel.find({ StatusOs: 'Em andamento' }).sort({ NomeCliente: 1 })
 
-      // renderizar os clientes cadastrados no banco
-      y += 10 // espaçamento da linha
-      // percorrer o vetor clientes(obtido do banco) usando o laço forEach (equivale ao laço for)
-      clientes.forEach((c) => {
-          // adicionar outra página se a folha inteira for preenchida (estratégia é saber o tamnaho da folha)
-          // folha A4 y = 297mm
-          if (y > 280) {
-              doc.addPage()
-              y = 20 // resetar a variável y
-              // redesenhar o cabeçalho
-              doc.text("Nome", 14, y)
-              doc.text("StatusOS", 80, y)
-              doc.text("Telefone", 130, y)
-              y += 5
-              doc.setLineWidth(0.5)
-              doc.line(10, y, 200, y)
-              y += 10
-          }
-          doc.text(c.NomeCliente, 14, y),
-              doc.text(c.StatusOs, 80, y),
-              doc.text(c.Telefone || "N/A", 130, y)
-          y += 10 //quebra de linha
-      })
+    // Criar o PDF em modo paisagem
+    const doc = new jsPDF('l', 'mm', 'a4') // 'l' = landscape
 
-      // Adicionar numeração automática de páginas
-      const paginas = doc.internal.getNumberOfPages()
-      for (let i = 1; i <= paginas; i++) {
-          doc.setPage(i)
-          doc.setFontSize(10)
-          doc.text(`Página ${i} de ${paginas}`, 105, 290, { align: 'center' })
+    // Inserir logo
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+    doc.addImage(imageBase64, 'PNG', 5, 8)
+
+    // Título e data
+    doc.setFontSize(18)
+    doc.text("Relatório de Ordens de Serviço em andamento", 14, 45)
+    const dataAtual = new Date().toLocaleDateString('pt-BR')
+    doc.setFontSize(12)
+    doc.text(`Data: ${dataAtual}`, 260, 10)
+
+    // Cabeçalhos ajustados
+    let y = 60
+    doc.setFontSize(12)
+    doc.text("ID da OS", 14, y)
+    doc.text("Cliente", 90, y)       // <-- antes era 70
+    doc.text("Status", 180, y)
+    doc.text("Telefone", 230, y)
+    y += 5
+    doc.setLineWidth(0.5)
+    doc.line(10, y, 285, y) // linha horizontal
+    y += 10
+
+    // Dados
+    ordens.forEach((os) => {
+      if (y > 190) {
+        doc.addPage()
+        y = 20
+        doc.setFontSize(12)
+        doc.text("ID da OS", 14, y)
+        doc.text("Cliente", 90, y)
+        doc.text("Status", 180, y)
+        doc.text("Telefone", 230, y)
+        y += 5
+        doc.line(10, y, 285, y)
+        y += 10
       }
 
-      // Definir o caminho do arquivo temporário e nome do arquivo
-      const tempDir = app.getPath('temp')
-      const filePath = path.join(tempDir, 'os-aberta.pdf')
-      // salvar temporariamente o arquivo
-      doc.save(filePath)
-      // abrir o arquivo no aplicativo padrão de leitura de pdf do computador do usuário
-      shell.openPath(filePath)
+      doc.setFontSize(11)
+      doc.text(os._id.toString(), 14, y)
+      doc.text(os.NomeCliente, 90, y)
+      doc.text(os.StatusOs, 180, y)
+      doc.text(os.Telefone || "N/A", 230, y)
+      y += 10
+    })
+
+    // Numeração de páginas
+    const totalPaginas = doc.internal.getNumberOfPages()
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i)
+      doc.setFontSize(10)
+      doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
+    }
+
+    // Salvar e abrir
+    const tempDir = app.getPath('temp')
+    const filePath = path.join(tempDir, 'os-andamento.pdf')
+    doc.save(filePath)
+    shell.openPath(filePath)
+
   } catch (error) {
-      console.log(error)
+    console.error('Erro ao gerar relatório de OS em andamento:', error)
   }
 }
 
 
+
+
+
 async function relatorioOSconcluida() {
   try {
-      // Passo 1: Consultar o banco de dados e obter a listagem de clientes cadastrados por ordem alfabética
-      const clientes = await ordemModel.find({ StatusOs: 'Concluída' }).sort({ NomeCliente: 1 })
-      // teste de recebimento da listagem de clientes
-      //console.log(clientes)
-      // Passo 2:Formatação do documento pdf
-      // p - portrait | l - landscape | mm e a4 (folha A4 (210x297mm))
-      const doc = new jsPDF('p', 'mm', 'a4')
-      // Inserir imagem no documento pdf
-      // imagePath (caminho da imagem que será inserida no pdf)
-      // imageBase64 (uso da biblioteca fs par ler o arquivo no formato png)
-      const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
-      const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
-      doc.addImage(imageBase64, 'PNG', 5, 8) //(5mm, 8mm x,y)
-      // definir o tamanho da fonte (tamanho equivalente ao word)
-      doc.setFontSize(18)
-      // escrever um texto (título)
-      doc.text("Relatório de Ordem de serviço", 14, 45)//x, y (mm)
-      // inserir a data atual no relatório
-      const dataAtual = new Date().toLocaleDateString('pt-BR')
-      doc.setFontSize(12)
-      doc.text(`Data: ${dataAtual}`, 165, 10)
-      // variável de apoio na formatação
-      let y = 60
-      doc.text("Nome", 14, y)
-      doc.text("StatusOS", 80, y)
-      doc.text("Telefone", 130, y)
-      y += 5
-      // desenhar uma linha
-      doc.setLineWidth(0.5) // expessura da linha
-      doc.line(10, y, 200, y) // 10 (inicio) ---- 200 (fim)
+    // Buscar OS com status "Aberta"
+    const ordens = await ordemModel.find({ StatusOs: 'Concluída' }).sort({ NomeCliente: 1 })
 
-      // renderizar os clientes cadastrados no banco
-      y += 10 // espaçamento da linha
-      // percorrer o vetor clientes(obtido do banco) usando o laço forEach (equivale ao laço for)
-      clientes.forEach((c) => {
-          // adicionar outra página se a folha inteira for preenchida (estratégia é saber o tamnaho da folha)
-          // folha A4 y = 297mm
-          if (y > 280) {
-              doc.addPage()
-              y = 20 // resetar a variável y
-              // redesenhar o cabeçalho
-              doc.text("Nome", 14, y)
-              doc.text("StatusOS", 80, y)
-              doc.text("Telefone", 130, y)
-              y += 5
-              doc.setLineWidth(0.5)
-              doc.line(10, y, 200, y)
-              y += 10
-          }
-          doc.text(c.NomeCliente, 14, y),
-              doc.text(c.StatusOs, 80, y),
-              doc.text(c.Telefone || "N/A", 130, y)
-          y += 10 //quebra de linha
-      })
+    // Criar o PDF em modo paisagem
+    const doc = new jsPDF('l', 'mm', 'a4') // 'l' = landscape
 
-      // Adicionar numeração automática de páginas
-      const paginas = doc.internal.getNumberOfPages()
-      for (let i = 1; i <= paginas; i++) {
-          doc.setPage(i)
-          doc.setFontSize(10)
-          doc.text(`Página ${i} de ${paginas}`, 105, 290, { align: 'center' })
+    // Inserir logo
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+    doc.addImage(imageBase64, 'PNG', 5, 8)
+
+    // Título e data
+    doc.setFontSize(18)
+    doc.text("Relatório de Ordens de Serviço concluída", 14, 45)
+    const dataAtual = new Date().toLocaleDateString('pt-BR')
+    doc.setFontSize(12)
+    doc.text(`Data: ${dataAtual}`, 260, 10)
+
+    // Cabeçalhos ajustados
+    let y = 60
+    doc.setFontSize(12)
+    doc.text("ID da OS", 14, y)
+    doc.text("Cliente", 90, y)       // <-- antes era 70
+    doc.text("Status", 180, y)
+    doc.text("Telefone", 230, y)
+    y += 5
+    doc.setLineWidth(0.5)
+    doc.line(10, y, 285, y) // linha horizontal
+    y += 10
+
+    // Dados
+    ordens.forEach((os) => {
+      if (y > 190) {
+        doc.addPage()
+        y = 20
+        doc.setFontSize(12)
+        doc.text("ID da OS", 14, y)
+        doc.text("Cliente", 90, y)
+        doc.text("Status", 180, y)
+        doc.text("Telefone", 230, y)
+        y += 5
+        doc.line(10, y, 285, y)
+        y += 10
       }
 
-      // Definir o caminho do arquivo temporário e nome do arquivo
-      const tempDir = app.getPath('temp')
-      const filePath = path.join(tempDir, 'os-aberta.pdf')
-      // salvar temporariamente o arquivo
-      doc.save(filePath)
-      // abrir o arquivo no aplicativo padrão de leitura de pdf do computador do usuário
-      shell.openPath(filePath)
+      doc.setFontSize(11)
+      doc.text(os._id.toString(), 14, y)
+      doc.text(os.NomeCliente, 90, y)
+      doc.text(os.StatusOs, 180, y)
+      doc.text(os.Telefone || "N/A", 230, y)
+      y += 10
+    })
+
+    // Numeração de páginas
+    const totalPaginas = doc.internal.getNumberOfPages()
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i)
+      doc.setFontSize(10)
+      doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
+    }
+
+    // Salvar e abrir
+    const tempDir = app.getPath('temp')
+    const filePath = path.join(tempDir, 'os-concluida.pdf')
+    doc.save(filePath)
+    shell.openPath(filePath)
+
   } catch (error) {
-      console.log(error)
+    console.error('Erro ao gerar relatório de OS em concluída:', error)
   }
 }
 
@@ -1137,7 +1132,7 @@ ipcMain.on('print-os', async (event) => {
       doc.setFontSize(12);
       doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10);
 
-      // Barra - Dados do Cliente
+      // Dados do Cliente
       doc.setFillColor(173, 216, 230);
       doc.rect(10, 45, 190, 8, 'F');
       doc.setTextColor(255);
@@ -1147,29 +1142,30 @@ ipcMain.on('print-os', async (event) => {
       doc.text(`Cliente: ${cliente.nomeCliente}`, 14, 60);
       doc.text(`Telefone: ${cliente.foneCliente}`, 14, 66);
       doc.text(`E-mail: ${cliente.emailCliente || 'N/A'}`, 14, 72);
-      doc.text(`Endereço: ${cliente.endereco || 'N/A'}`, 14, 78);
-      doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 84);
+      doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 78);
 
-      // Barra - Descrição de Serviços
+// AJUSTADO: bloco de descrição logo após a forma de pagamento
       doc.setFillColor(173, 216, 230);
-      doc.rect(10, 92, 190, 8, 'F');
+      doc.rect(10, 84, 190, 8, 'F'); // antes era Y=92
       doc.setTextColor(255);
-      doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 98);
+      doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 90); // antes era Y=98
       doc.setTextColor(0);
       doc.setFontSize(11);
-      doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 106);
-      doc.text(`Quantidade: ${os.Qtd}`, 14, 112);
-      doc.text(`Marca da Lã: ${os.Marca}`, 14, 118);
-      doc.text(`Cor da Lã: ${os.Cor}`, 14, 124);
-      doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 130);
+      doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 98);
+      doc.text(`Quantidade: ${os.Qtd}`, 14, 104);
+      doc.text(`Marca da Lã: ${os.Marca}`, 14, 110);
+      doc.text(`Cor da Lã: ${os.Cor}`, 14, 116);
+      doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 122);
 
-      // Observações (com fundo claro)
+      // Observações (com fundo claro) - AUMENTADO
       doc.setFillColor(240, 240, 240);
-      doc.rect(10, 138, 190, 20, 'F');
+      doc.rect(10, 128, 190, 35, 'F'); // aumentou de 20 para 40
       doc.setFontSize(11);
+      doc.setTextColor(0);
       const desc = doc.splitTextToSize(os.Desc, 180);
-      doc.text("OBSERVAÇÕES:", 14, 145);
-      doc.text(desc, 14, 150);
+      doc.text("OBSERVAÇÕES:", 14, 135); // título
+      doc.text(desc, 14, 140);           // conteúdo
+
 
       // Observações do cliente (deixe espaço para preencher)
       doc.setFillColor(173, 216, 230);
@@ -1230,7 +1226,7 @@ async function printOS(osId) {
     doc.setFontSize(12);
     doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 170, 10);
 
-    // Dados do Cliente
+          // Dados do Cliente
     doc.setFillColor(173, 216, 230);
     doc.rect(10, 45, 190, 8, 'F');
     doc.setTextColor(255);
@@ -1240,27 +1236,29 @@ async function printOS(osId) {
     doc.text(`Cliente: ${cliente.nomeCliente}`, 14, 60);
     doc.text(`Telefone: ${cliente.foneCliente}`, 14, 66);
     doc.text(`E-mail: ${cliente.emailCliente || 'N/A'}`, 14, 72);
-    doc.text(`Endereço: ${cliente.endereco || 'N/A'}`, 14, 78);
-    doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 84);
+    doc.text(`Forma de Pagamento: ${os.Pgmt}`, 14, 78);
 
-    // Descrição de Serviços
+// AJUSTADO: bloco de descrição logo após a forma de pagamento
     doc.setFillColor(173, 216, 230);
-    doc.rect(10, 92, 190, 8, 'F');
+    doc.rect(10, 84, 190, 8, 'F'); // antes era Y=92
     doc.setTextColor(255);
-    doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 98);
+    doc.text("DESCRIÇÃO DE SERVIÇOS", 14, 90); // antes era Y=98
     doc.setTextColor(0);
-    doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 106);
-    doc.text(`Quantidade: ${os.Qtd}`, 14, 112);
-    doc.text(`Marca da Lã: ${os.Marca}`, 14, 118);
-    doc.text(`Cor da Lã: ${os.Cor}`, 14, 124);
-    doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 130);
+    doc.setFontSize(11);
+    doc.text(`Tipo de Serviço: ${os.Servico}`, 14, 98);
+    doc.text(`Quantidade: ${os.Qtd}`, 14, 104);
+    doc.text(`Marca da Lã: ${os.Marca}`, 14, 110);
+    doc.text(`Cor da Lã: ${os.Cor}`, 14, 116);
+    doc.text(`Valor Total: R$ ${os.ValorTotal}`, 14, 122);
 
-    // Observações
+      // Observações (com fundo claro) - AUMENTADO
     doc.setFillColor(240, 240, 240);
-    doc.rect(10, 138, 190, 20, 'F');
+    doc.rect(10, 128, 190, 35, 'F'); // aumentou de 20 para 40
+    doc.setFontSize(11);
+    doc.setTextColor(0);
     const desc = doc.splitTextToSize(os.Desc, 180);
-    doc.text("OBSERVAÇÕES:", 14, 145);
-    doc.text(desc, 14, 150);
+    doc.text("OBSERVAÇÕES:", 14, 135); // título
+    doc.text(desc, 14, 140);           // conteúdo
 
     // Observações do cliente
     doc.setFillColor(173, 216, 230);

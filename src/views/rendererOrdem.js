@@ -233,28 +233,37 @@ function findOS() {
 api.renderOS((event, dataOS) => {
   console.log(dataOS)
   const os = JSON.parse(dataOS)
+
   // preencher os campos com os dados da OS
   idOS.value = os._id
+
   // formatar data:
   const data = new Date(os.DtEntrada)
   const formatada = data.toLocaleString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
   })
   dateOS.value = formatada;
   idClient.value = os.IdCliente;
   nome.value = os.NomeCliente;
   telefone.value = os.Telefone; 
-  statusS.value =os.StatusOs; 
+  statusS.value = os.StatusOs; 
   servico.value = os.Servico;  
   qtd.value = os.Qtd;
   desc.value = os.Desc;
+
+  // Marca e cor (ajuste importante aqui!)
   marca.value = os.Marca;
-  cor.value = os.Cor;
+  marca.dispatchEvent(new Event('change')); // força o carregamento das cores
+
+  setTimeout(() => {
+    cor.value = os.Cor;
+  }, 200); // aguarda o carregamento antes de definir a cor
+
   pgmt.value = os.Pgmt;
   valor.value = os.ValorTotal;
 
