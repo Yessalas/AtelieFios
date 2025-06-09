@@ -54,7 +54,7 @@ function aboutWindows(){
     // criar a janela sobre
     about = new BrowserWindow({
         width: 400,
-        height: 400,
+        height: 270,
         icon: './src/public/img/trico.png',
         autoHideMenuBar: true,
         resizable: false,
@@ -78,8 +78,9 @@ function clientWindow(){
     // criar a janela cliente
     client = new BrowserWindow({
       width: 850,
-      height: 660,
-      //autoHideMenuBar: true,
+      height: 590,
+      icon: './src/public/img/trico.png',
+      autoHideMenuBar: true,
       resizable: false,
       parent: main,
       modal: true,
@@ -105,9 +106,9 @@ function ordemsWindow(){
     // criar a janela OS
     ordem = new BrowserWindow({
       width: 950,
-      height: 760,
+      height: 690,
         icon: './src/public/img/trico.png',
-        // autoHideMenuBar: true,
+        autoHideMenuBar: true,
         resizable: false,
         minimizable: false,
         parent: main,
@@ -132,10 +133,10 @@ function fiosWindow(){
   if (main){
     // criar a janela fios
     fios = new BrowserWindow({
-        width: 950,
-        height: 750,
+        width: 850,
+        height: 740,
         icon: './src/public/img/trico.png',
-        //autoHideMenuBar: true,
+        autoHideMenuBar: true,
         resizable: false,
         minimizable: false,
         parent: main,
@@ -200,6 +201,10 @@ const template = [
           click: () => ordemsWindow()
         },
         {
+          label:'Fio&Lans',
+          click: () => fiosWindow()
+        },
+        {
           type: 'separator'
         },
         {
@@ -217,10 +222,6 @@ const template = [
           click: () => relatorioClientes()
         },
         {
-          label:'Fio&Lans',
-          click: () => fiosWindow()
-        },
-        {
           label:'OS abertas',
           click: () => relatorioOSaberta()
         },
@@ -232,6 +233,14 @@ const template = [
         {
           label:'Os concluidas',
           click: () => relatorioOSconcluida()
+        },
+        {
+          label:'Os reparo de peças',
+          click: () => relatorioReparoDePeca()
+        },
+        {
+          label:'Os encomendas',
+          click: () => relatorioEncomendas()
         }
         
       ]
@@ -258,11 +267,8 @@ const template = [
         {
           label: 'Recarregador',
           role: 'reload'
-        },
-        {
-          label:'Ferramentas do desenvolvedor',
-          role:'toggleDevTools'
         }
+        
       ]
   },
   {
@@ -341,17 +347,31 @@ const template = [
 })
 
 ipcMain.on('new-ordem', async (event, ordem) => {
-  console.log( ordem)
+  console.log(ordem)
 
   try {
+    // 🔍 Buscar fio no estoque
+    const fioSelecionado = await fiosModel.findOne({
+      MarcaFios: ordem.MarcaOrdem,
+      CorFios: ordem.CorOrdem
+    })
+
+    // ❌ Se não tem estoque, mostrar erro e cancelar
+    if (!fioSelecionado || fioSelecionado.QtdFios <= 0) {
+      return dialog.showErrorBox(
+        'Estoque insuficiente',
+        'Não há mais unidades disponíveis desse fio.'
+      )
+    }
+
+    // ✅ Criar nova OS
     const newOrdem = new ordemModel({
-      // numOs: ordem.numOsOrdem,    
-      IdCliente:ordem.idClientOrdem,
-      NomeCliente: ordem.NomeOrdem, 
-      Telefone: ordem.TelefoneOrdem, 
-      StatusOs: ordem.StatusOrdem, 
-      Servico: ordem.ServicoOrdem,  
-      Qtd: ordem.QtdOrdem, 
+      IdCliente: ordem.idClientOrdem,
+      NomeCliente: ordem.NomeOrdem,
+      Telefone: ordem.TelefoneOrdem,
+      StatusOs: ordem.StatusOrdem,
+      Servico: ordem.ServicoOrdem,
+      Qtd: ordem.QtdOrdem,
       Desc: ordem.DescOrdem,
       Marca: ordem.MarcaOrdem,
       Cor: ordem.CorOrdem,
@@ -361,33 +381,37 @@ ipcMain.on('new-ordem', async (event, ordem) => {
 
     await newOrdem.save()
 
-    // Obter o ID gerado automaticamente pelo MongoDB
+    // 🔄 Atualizar estoque
+    fioSelecionado.QtdFios -= 1
+
+    if (fioSelecionado.QtdFios <= 0) {
+      await fiosModel.findByIdAndDelete(fioSelecionado._id)
+    } else {
+      await fioSelecionado.save()
+    }
+
+    // 🎉 Confirmar e perguntar se deseja imprimir
     const osId = newOrdem._id
-    console.log("ID da nova OS:", osId)
 
     dialog.showMessageBox({
       type: 'info',
       title: 'Sucesso',
       message: 'Ordem de Serviço cadastrada com sucesso!\nDeseja imprimir esta OS?',
-      buttons: ['Sim', 'Não'] // [0, 1]',
+      buttons: ['Sim', 'Não']
     }).then((result) => {
-      //ação ao pressionar o botão (result = 0)
       if (result.response === 0) {
-          // executar a função printOS passando o id da OS como parâmetro
-          printOS(osId)
-          //enviar um pedido para o renderizador limpar os campos e resetar as configurações pré definidas (rótulo 'reset-form' do preload.js
-          event.reply('reset-form-os')
-      } else {
-          //enviar um pedido para o renderizador limpar os campos e resetar as configurações pré definidas (rótulo 'reset-form' do preload.js
-          event.reply('reset-form-os')
+        printOS(osId)
       }
-  })
+      event.reply('reset-form-os')
+    })
 
   } catch (error) {
     console.error('Erro ao salvar a OS:', error)
     dialog.showErrorBox('Erro ao salvar OS', error.message || 'Verifique os dados e tente novamente.')
   }
 })
+
+
 
 
 ipcMain.on('new-fios', async (event, fios) => {
@@ -500,60 +524,61 @@ async function relatorioClientes() {
 // RELATORIO DE OS
 async function relatorioOSaberta() {
   try {
-    // Buscar OS com status "Aberta"
     const ordens = await ordemModel.find({ StatusOs: 'Aberta' }).sort({ NomeCliente: 1 })
 
-    // Criar o PDF em modo paisagem
-    const doc = new jsPDF('l', 'mm', 'a4') // 'l' = landscape
+    const doc = new jsPDF('l', 'mm', 'a4')
 
-    // Inserir logo
     const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
     const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
     doc.addImage(imageBase64, 'PNG', 5, 8)
 
-    // Título e data
     doc.setFontSize(18)
     doc.text("Relatório de Ordens de Serviço Abertas", 14, 45)
     const dataAtual = new Date().toLocaleDateString('pt-BR')
     doc.setFontSize(12)
     doc.text(`Data: ${dataAtual}`, 260, 10)
 
-    // Cabeçalhos ajustados
     let y = 60
     doc.setFontSize(12)
     doc.text("ID da OS", 14, y)
-    doc.text("Cliente", 90, y)       // <-- antes era 70
-    doc.text("Status", 180, y)
-    doc.text("Telefone", 230, y)
+    doc.text("Cliente", 70, y)
+    doc.text("Status", 140, y)
+    doc.text("Telefone", 180, y)
+    doc.text("Data entrada", 230, y)
     y += 5
     doc.setLineWidth(0.5)
-    doc.line(10, y, 285, y) // linha horizontal
+    doc.line(10, y, 285, y)
     y += 10
 
-    // Dados
     ordens.forEach((os) => {
       if (y > 190) {
         doc.addPage()
         y = 20
         doc.setFontSize(12)
         doc.text("ID da OS", 14, y)
-        doc.text("Cliente", 90, y)
-        doc.text("Status", 180, y)
-        doc.text("Telefone", 230, y)
+        doc.text("Cliente", 70, y)
+        doc.text("Status", 140, y)
+        doc.text("Telefone", 180, y)
+        doc.text("Data entrada", 230, y)
         y += 5
         doc.line(10, y, 285, y)
         y += 10
       }
 
+      const dataEntradaFormatada = new Date(os.DtEntrada).toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      })
+
       doc.setFontSize(11)
       doc.text(os._id.toString(), 14, y)
-      doc.text(os.NomeCliente, 90, y)
-      doc.text(os.StatusOs, 180, y)
-      doc.text(os.Telefone || "N/A", 230, y)
+      doc.text(os.NomeCliente, 70, y)
+      doc.text(os.StatusOs, 140, y)
+      doc.text(os.Telefone || "N/A", 180, y)
+      doc.text(dataEntradaFormatada, 230, y)
       y += 10
     })
 
-    // Numeração de páginas
     const totalPaginas = doc.internal.getNumberOfPages()
     for (let i = 1; i <= totalPaginas; i++) {
       doc.setPage(i)
@@ -561,7 +586,6 @@ async function relatorioOSaberta() {
       doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
     }
 
-    // Salvar e abrir
     const tempDir = app.getPath('temp')
     const filePath = path.join(tempDir, 'os-aberta.pdf')
     doc.save(filePath)
@@ -576,60 +600,61 @@ async function relatorioOSaberta() {
 
 async function relatorioOSandamento() {
   try {
-    // Buscar OS com status "Aberta"
     const ordens = await ordemModel.find({ StatusOs: 'Em andamento' }).sort({ NomeCliente: 1 })
 
-    // Criar o PDF em modo paisagem
     const doc = new jsPDF('l', 'mm', 'a4') // 'l' = landscape
 
-    // Inserir logo
     const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
     const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
     doc.addImage(imageBase64, 'PNG', 5, 8)
 
-    // Título e data
     doc.setFontSize(18)
     doc.text("Relatório de Ordens de Serviço em andamento", 14, 45)
     const dataAtual = new Date().toLocaleDateString('pt-BR')
     doc.setFontSize(12)
     doc.text(`Data: ${dataAtual}`, 260, 10)
 
-    // Cabeçalhos ajustados
     let y = 60
     doc.setFontSize(12)
     doc.text("ID da OS", 14, y)
-    doc.text("Cliente", 90, y)       // <-- antes era 70
-    doc.text("Status", 180, y)
-    doc.text("Telefone", 230, y)
+    doc.text("Cliente", 70, y)
+    doc.text("Status", 140, y)
+    doc.text("Telefone", 180, y)
+    doc.text("Data entrada", 230, y)
     y += 5
     doc.setLineWidth(0.5)
-    doc.line(10, y, 285, y) // linha horizontal
+    doc.line(10, y, 285, y)
     y += 10
 
-    // Dados
     ordens.forEach((os) => {
       if (y > 190) {
         doc.addPage()
         y = 20
         doc.setFontSize(12)
         doc.text("ID da OS", 14, y)
-        doc.text("Cliente", 90, y)
-        doc.text("Status", 180, y)
-        doc.text("Telefone", 230, y)
+        doc.text("Cliente", 70, y)
+        doc.text("Status", 140, y)
+        doc.text("Telefone", 180, y)
+        doc.text("Data entrada", 230, y)
         y += 5
         doc.line(10, y, 285, y)
         y += 10
       }
 
+      const dataEntradaFormatada = new Date(os.DtEntrada).toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      })
+
       doc.setFontSize(11)
       doc.text(os._id.toString(), 14, y)
-      doc.text(os.NomeCliente, 90, y)
-      doc.text(os.StatusOs, 180, y)
-      doc.text(os.Telefone || "N/A", 230, y)
+      doc.text(os.NomeCliente, 70, y)
+      doc.text(os.StatusOs, 140, y)
+      doc.text(os.Telefone || "N/A", 180, y)
+      doc.text(dataEntradaFormatada, 230, y)
       y += 10
     })
 
-    // Numeração de páginas
     const totalPaginas = doc.internal.getNumberOfPages()
     for (let i = 1; i <= totalPaginas; i++) {
       doc.setPage(i)
@@ -637,7 +662,6 @@ async function relatorioOSandamento() {
       doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
     }
 
-    // Salvar e abrir
     const tempDir = app.getPath('temp')
     const filePath = path.join(tempDir, 'os-andamento.pdf')
     doc.save(filePath)
@@ -648,66 +672,63 @@ async function relatorioOSandamento() {
   }
 }
 
-
-
-
-
 async function relatorioOSconcluida() {
   try {
-    // Buscar OS com status "Aberta"
     const ordens = await ordemModel.find({ StatusOs: 'Concluída' }).sort({ NomeCliente: 1 })
 
-    // Criar o PDF em modo paisagem
-    const doc = new jsPDF('l', 'mm', 'a4') // 'l' = landscape
+    const doc = new jsPDF('l', 'mm', 'a4')
 
-    // Inserir logo
     const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
     const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
     doc.addImage(imageBase64, 'PNG', 5, 8)
 
-    // Título e data
     doc.setFontSize(18)
-    doc.text("Relatório de Ordens de Serviço concluída", 14, 45)
+    doc.text("Relatório de Ordens de Serviço concluídas", 14, 45)
     const dataAtual = new Date().toLocaleDateString('pt-BR')
     doc.setFontSize(12)
     doc.text(`Data: ${dataAtual}`, 260, 10)
 
-    // Cabeçalhos ajustados
     let y = 60
     doc.setFontSize(12)
     doc.text("ID da OS", 14, y)
-    doc.text("Cliente", 90, y)       // <-- antes era 70
-    doc.text("Status", 180, y)
-    doc.text("Telefone", 230, y)
+    doc.text("Cliente", 70, y)
+    doc.text("Status", 140, y)
+    doc.text("Telefone", 180, y)
+    doc.text("Data entrada", 230, y)
     y += 5
     doc.setLineWidth(0.5)
-    doc.line(10, y, 285, y) // linha horizontal
+    doc.line(10, y, 285, y)
     y += 10
 
-    // Dados
     ordens.forEach((os) => {
       if (y > 190) {
         doc.addPage()
         y = 20
         doc.setFontSize(12)
         doc.text("ID da OS", 14, y)
-        doc.text("Cliente", 90, y)
-        doc.text("Status", 180, y)
-        doc.text("Telefone", 230, y)
+        doc.text("Cliente", 70, y)
+        doc.text("Status", 140, y)
+        doc.text("Telefone", 180, y)
+        doc.text("Data entrada", 230, y)
         y += 5
         doc.line(10, y, 285, y)
         y += 10
       }
 
+      const dataEntradaFormatada = new Date(os.DtEntrada).toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      })
+
       doc.setFontSize(11)
       doc.text(os._id.toString(), 14, y)
-      doc.text(os.NomeCliente, 90, y)
-      doc.text(os.StatusOs, 180, y)
-      doc.text(os.Telefone || "N/A", 230, y)
+      doc.text(os.NomeCliente, 70, y)
+      doc.text(os.StatusOs, 140, y)
+      doc.text(os.Telefone || "N/A", 180, y)
+      doc.text(dataEntradaFormatada, 230, y)
       y += 10
     })
 
-    // Numeração de páginas
     const totalPaginas = doc.internal.getNumberOfPages()
     for (let i = 1; i <= totalPaginas; i++) {
       doc.setPage(i)
@@ -715,16 +736,166 @@ async function relatorioOSconcluida() {
       doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
     }
 
-    // Salvar e abrir
     const tempDir = app.getPath('temp')
     const filePath = path.join(tempDir, 'os-concluida.pdf')
     doc.save(filePath)
     shell.openPath(filePath)
 
   } catch (error) {
-    console.error('Erro ao gerar relatório de OS em concluída:', error)
+    console.error('Erro ao gerar relatório de OS concluída:', error)
   }
 }
+
+async function relatorioReparoDePeca() {
+  try {
+    const ordens = await ordemModel.find({ Servico: 'Reparo de peça' }).sort({ NomeCliente: 1 })
+
+    const doc = new jsPDF('l', 'mm', 'a4')
+
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+    doc.addImage(imageBase64, 'PNG', 5, 8)
+
+    doc.setFontSize(18)
+    doc.text("Relatório de Reparo de Peça", 14, 45)
+    const dataAtual = new Date().toLocaleDateString('pt-BR')
+    doc.setFontSize(12)
+    doc.text(`Data: ${dataAtual}`, 260, 10)
+
+    let y = 60
+    doc.setFontSize(12)
+    doc.text("ID da OS", 14, y)
+    doc.text("Cliente", 70, y)
+    doc.text("Status", 140, y)
+    doc.text("Telefone", 180, y)
+    doc.text("Data entrada", 230, y)
+    y += 5
+    doc.setLineWidth(0.5)
+    doc.line(10, y, 285, y)
+    y += 10
+
+    ordens.forEach((os) => {
+      if (y > 190) {
+        doc.addPage()
+        y = 20
+        doc.setFontSize(12)
+        doc.text("ID da OS", 14, y)
+        doc.text("Cliente", 70, y)
+        doc.text("Status", 140, y)
+        doc.text("Telefone", 180, y)
+        doc.text("Data entrada", 230, y)
+        y += 5
+        doc.line(10, y, 285, y)
+        y += 10
+      }
+
+      const dataEntradaFormatada = new Date(os.DtEntrada).toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      })
+
+      doc.setFontSize(11)
+      doc.text(os._id.toString(), 14, y)
+      doc.text(os.NomeCliente, 70, y)
+      doc.text(os.StatusOs, 140, y)
+      doc.text(os.Telefone || "N/A", 180, y)
+      doc.text(dataEntradaFormatada, 230, y)
+      y += 10
+    })
+
+    const totalPaginas = doc.internal.getNumberOfPages()
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i)
+      doc.setFontSize(10)
+      doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
+    }
+
+    const tempDir = app.getPath('temp')
+    const filePath = path.join(tempDir, 'reparo-pecas.pdf')
+    doc.save(filePath)
+    shell.openPath(filePath)
+
+  } catch (error) {
+    console.error('Erro ao gerar relatório de reparo de peça:', error)
+  }
+}
+
+
+async function relatorioEncomendas() {
+  try {
+    const ordens = await ordemModel.find({ Servico: 'Encomenda' }).sort({ NomeCliente: 1 })
+
+    const doc = new jsPDF('l', 'mm', 'a4')
+
+    const imagePath = path.join(__dirname, 'src', 'public', 'img', 'logo.png')
+    const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' })
+    doc.addImage(imageBase64, 'PNG', 5, 8)
+
+    doc.setFontSize(18)
+    doc.text("Relatório de Encomendas", 14, 45)
+    const dataAtual = new Date().toLocaleDateString('pt-BR')
+    doc.setFontSize(12)
+    doc.text(`Data: ${dataAtual}`, 260, 10)
+
+    let y = 60
+    doc.setFontSize(12)
+    doc.text("ID da OS", 14, y)
+    doc.text("Cliente", 70, y)
+    doc.text("Status", 140, y)
+    doc.text("Telefone", 180, y)
+    doc.text("Data entrada", 230, y)
+    y += 5
+    doc.setLineWidth(0.5)
+    doc.line(10, y, 285, y)
+    y += 10
+
+    ordens.forEach((os) => {
+      if (y > 190) {
+        doc.addPage()
+        y = 20
+        doc.setFontSize(12)
+        doc.text("ID da OS", 14, y)
+        doc.text("Cliente", 70, y)
+        doc.text("Status", 140, y)
+        doc.text("Telefone", 180, y)
+        doc.text("Data entrada", 230, y)
+        y += 5
+        doc.line(10, y, 285, y)
+        y += 10
+      }
+
+      const dataEntradaFormatada = new Date(os.DtEntrada).toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      })
+
+      doc.setFontSize(11)
+      doc.text(os._id.toString(), 14, y)
+      doc.text(os.NomeCliente, 70, y)
+      doc.text(os.StatusOs, 140, y)
+      doc.text(os.Telefone || "N/A", 180, y)
+      doc.text(dataEntradaFormatada, 230, y)
+      y += 10
+    })
+
+    const totalPaginas = doc.internal.getNumberOfPages()
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i)
+      doc.setFontSize(10)
+      doc.text(`Página ${i} de ${totalPaginas}`, 148, 200, { align: 'center' })
+    }
+
+    const tempDir = app.getPath('temp')
+    const filePath = path.join(tempDir, 'encomendas.pdf')
+    doc.save(filePath)
+    shell.openPath(filePath)
+
+  } catch (error) {
+    console.error('Erro ao gerar relatório de encomendas:', error)
+  }
+}
+
+
 
 ipcMain.on('validate-search', () =>{
   dialog.showMessageBox({
