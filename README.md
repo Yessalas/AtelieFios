@@ -1,30 +1,37 @@
-
 ![GitHub License](https://img.shields.io/github/license/yessalas/AtelieFios)
 
 # Ateliê Fios
 Sistema para gestão de serviços de uma assistência técnica de computadores e notebooks desenvolvido com uso do framewrok Electron e do banco de dados MongoDB.
 
 ### Tela principal
-![](src/public/img/Principal.png)
+<img src="src/public/img/Principal.png" width="600"/>
+
 ### Cadastro de clientes
-![](src/public/img/Clientes.png)
+<img src="src/public/img/Clientes.png" width="600"/>
+
 ### Ordem de serviço
-![](src/public/img/Ordem.png)
+<img src="src/public/img/Ordem.png" width="600"/>
+
 ### Cadastro de Fios e Lãs
-![](src/public/img/Fios.png)
+<img src="src/public/img/Fios.png" width="600"/>
 
 ### Relatório de clientes
-![](src/public/img/RelatorioCliente.png)
+<img src="src/public/img/RelatorioCliente.png" width="600"/>
+
 ### Relatório OS abertas
-![](src/public/img/OrdemAberta.PNG)
+<img src="src/public/img/OrdemAberta.PNG" width="600"/>
+
 ### Relatório OS em andamento
-![](src/public/img/OrdemAndamento.PNG)
+<img src="src/public/img/OrdemAndamento.PNG" width="600"/>
+
 ### Relatório OS concluída
-![](src/public/img/OrdemConcluida.PNG)
+<img src="src/public/img/OrdemConcluida.PNG" width="600"/>
+
 ### Relatório OS reparo de peças
-![](src/public/img/OsReparoPecas.PNG)
+<img src="src/public/img/OsReparoPecas.PNG" width="600"/>
+
 ### Relatório OS encomendas
-![](src/public/img/OsEncomendas.PNG)
+<img src="src/public/img/OsEncomendas.PNG" width="600"/>
 
 ## Autor
 Yesenia Salas
@@ -34,11 +41,10 @@ Yesenia Salas
 - Ter o banco de dados MongoDB instalado
 
 ### Instalação do MongoDB:
-Acesse o site oficial:
+Acesse o site oficial:  
 [MongoDB](https://www.mongodb.com/try/download/community)
 
-Baixe o MongoDB Community Server e instale com a opção de "Install MongoDB as a Service" ativada (instalação padrão).
-
+Baixe o MongoDB Community Server e instale com a opção de "Install MongoDB as a Service" ativada (instalação padrão).  
 Após instalar, ele inicia automaticamente.
 
 ### Instalação do sistema assisTI
